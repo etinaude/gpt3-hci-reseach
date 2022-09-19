@@ -1,5 +1,34 @@
 <script lang="ts">
-	import Counter from '$lib/Counter.svelte';
+	import { Configuration, OpenAIApi } from 'openai';
+	import { onMount } from 'svelte';
+	import { v4 as uuidv4 } from 'uuid';
+	import firebaseConfig from '../keys/firebase';
+	import apiKey from '../keys/openAI';
+
+	let fireStore: any;
+	let app: any;
+	let db: any;
+
+	let state = '';
+
+	let emotion = '';
+	let explaination = '';
+	let confidence = '5';
+
+	let story = `Loading...`;
+	let computerPrediction = 'This is a sad story';
+	let storyPrompt = '';
+
+	onMount(async () => {
+		const firebaseApp = await import('firebase/app');
+		const fireAnalytics = await import('firebase/analytics');
+		fireStore = await import('firebase/firestore/lite');
+
+		// Initialize Firebase
+		app = firebaseApp.initializeApp(firebaseConfig);
+		const analytics = fireAnalytics.getAnalytics(app);
+		db = fireStore.getFirestore(app);
+	});
 
 	let possibleEmotions = ['happy', 'sad', 'angry', 'scary', 'surprising'];
 	let possibleSubjects = [
@@ -30,6 +59,20 @@
 	});
 	const openai = new OpenAIApi(configuration);
 
+	function validate(): boolean {
+		if (!emotion || !explaination) {
+			state = 'error';
+
+			setTimeout(() => {
+				state = '';
+			}, 2000);
+
+			return false;
+		}
+
+		return true;
+	}
+
 	function reset() {
 		story = 'Loading';
 		emotion = '';
@@ -38,6 +81,42 @@
 
 		getPrompt();
 	}
+
+	async function submit() {
+		state = 'loading';
+		const doc = {
+			computerPrediction,
+			confidence,
+			emotion,
+			explaination,
+			story,
+			storyPrompt
+		};
+
+		console.log(doc);
+
+		if (!validate()) return;
+
+		const uuid = uuidv4();
+
+		try {
+			await fireStore.setDoc(fireStore.doc(db, 'docs', uuid), doc);
+			state = 'success';
+
+			reset();
+		} catch {
+			state = 'apiError';
+		}
+
+		setTimeout(() => {
+			state = '';
+		}, 2000);
+	}
+
+	function pickRandomItem(items: any[]) {
+		return items[Math.floor(Math.random() * items.length)];
+	}
+
 	function generatePrompt(): string {
 		let emotion = pickRandomItem(possibleEmotions);
 		let subject = pickRandomItem(possibleSubjects);
