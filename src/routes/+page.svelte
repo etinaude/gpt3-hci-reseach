@@ -33,44 +33,31 @@
 </svelte:head>
 
 <section>
-	<h1>
-		<span class="welcome">
-			<picture>
-				<source srcset="svelte-welcome.webp" type="image/webp" />
-				<img src="svelte-welcome.png" alt="Welcome" />
-			</picture>
-		</span>
+	<h2>What emotion is convyed in this story?</h2>
+	<div class="story">{story}</div>
 
-		to your new<br />SvelteKit app
-	</h1>
+	<h3>The computer thinks this:</h3>
+	<div class="prediction">{computerPrediction}</div>
 
-	<h2>
-		try editing <strong>src/routes/+page.svelte</strong>
-	</h2>
+	<div class="feedback-cont">
+		<h3>Select emotion showed in text:</h3>
 
-	<Counter />
+		<select bind:value={emotion}>
+			{#each possibleEmotions as opt}
+				<option value={opt}>{opt}</option>
+			{/each}
+		</select>
+
+		<h3>Why did you pick this?:</h3>
+		<textarea bind:value={explaination} />
+
+		<h3>How confident are you?:</h3>
+		<input type="range" min="0" max="10" class="slider" bind:value={confidence} />
+		<div>{confidence}0%</div>
+
+		<button on:click={() => submit()}> Submit </button>
+	</div>
 </section>
-
-<style>
-	section {
-		display: flex;
-		flex-direction: column;
-		justify-content: center;
-		align-items: center;
-		flex: 1;
-	}
-
-	h1 {
-		width: 100%;
-	}
-
-	.welcome {
-		display: block;
-		position: relative;
-		width: 100%;
-		height: 0;
-		padding: 0 0 calc(100% * 495 / 2048) 0;
-	}
 
 {#if state === 'error'}
 	<div class="banner error">Please fill in all the fields</div>
