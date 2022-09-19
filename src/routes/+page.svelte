@@ -47,11 +47,15 @@
 		padding: 0 0 calc(100% * 495 / 2048) 0;
 	}
 
-	.welcome img {
-		position: absolute;
-		width: 100%;
-		height: 100%;
-		top: 0;
-		display: block;
-	}
-</style>
+{#if state === 'error'}
+	<div class="banner error">Please fill in all the fields</div>
+{/if}
+{#if state === 'apiError'}
+	<div class="banner error">Hmm Something went wrong! Please Try again later</div>
+{/if}
+{#if state === 'success'}
+	<div class="banner success">Submitted!</div>
+{/if}
+{#if state === 'loading'}
+	<div class="banner loading">Loading...</div>
+{/if}
