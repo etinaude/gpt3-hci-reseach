@@ -25,6 +25,52 @@
 		'tower'
 	];
 
+	const configuration = new Configuration({
+		apiKey
+	});
+	const openai = new OpenAIApi(configuration);
+
+	function reset() {
+		story = 'Loading';
+		emotion = '';
+		explaination = '';
+		confidence = '5';
+
+		getPrompt();
+	}
+	function generatePrompt(): string {
+		let emotion = pickRandomItem(possibleEmotions);
+		let subject = pickRandomItem(possibleSubjects);
+		let object = pickRandomItem(possibleObjects);
+
+		return `Tell me a long ${emotion} story about a ${subject} who had a ${object}`;
+	}
+
+	async function gpt3Call(prompt: string): Promise<string> {
+		const completion = await openai.createCompletion({
+			model: 'text-davinci-002',
+			prompt: prompt,
+			temperature: 0.6,
+			max_tokens: 100
+		});
+
+		return completion.data.choices![0].text!;
+	}
+
+	async function getPrompt() {
+		storyPrompt = generatePrompt();
+		story = await gpt3Call(storyPrompt);
+
+		getComputerPrediction();
+	}
+
+	async function getComputerPrediction() {
+		let prompt = `What emotion is this story ${story}?`;
+
+		computerPrediction = await gpt3Call(prompt);
+	}
+
+	reset();
 </script>
 
 <svelte:head>
