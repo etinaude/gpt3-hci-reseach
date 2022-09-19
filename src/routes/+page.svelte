@@ -1,5 +1,30 @@
 <script lang="ts">
 	import Counter from '$lib/Counter.svelte';
+
+	let possibleEmotions = ['happy', 'sad', 'angry', 'scary', 'surprising'];
+	let possibleSubjects = [
+		'dawrf',
+		'elf',
+		'dragon',
+		'man named Fred',
+		'lady named Mary',
+		'pixie',
+		'thief',
+		'wizard',
+		'archer'
+	];
+	let possibleObjects = [
+		'ball',
+		'knife',
+		'baloon',
+		'dog',
+		'cat',
+		'candle',
+		'phone',
+		'lock',
+		'tower'
+	];
+
 </script>
 
 <svelte:head>
