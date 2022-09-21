@@ -4,6 +4,7 @@
 	import { v4 as uuidv4 } from 'uuid';
 	import firebaseConfig from '../keys/firebase';
 	import apiKey from '../keys/openAI';
+	import huggableKey from '../keys/huggable';
 
 	let fireStore: any;
 	let app: any;
@@ -18,6 +19,7 @@
 	let story = `Loading...`;
 	let computerPrediction = 'This is a sad story';
 	let storyPrompt = '';
+
 
 	onMount(async () => {
 		const firebaseApp = await import('firebase/app');
@@ -146,7 +148,31 @@
 	async function getComputerPrediction() {
 		let prompt = `What emotion is this story ${story}?`;
 
-		computerPrediction = await gpt3Call(prompt);
+		await getUncertaintyInformation(story);
+	}
+
+	async function getUncertaintyInformation(story: string){
+
+		const headers = new Headers({ Authorization: `Bearer ${huggableKey}` });
+
+		const options = {
+			method: 'POST',
+			headers,
+			body: JSON.stringify(story)
+		};
+
+		const res = await fetch(
+			`https://api-inference.huggingface.co/models/bhadresh-savani/bert-base-uncased-emotion/`,
+			options
+		);
+
+		// Array holding uncertainty information
+		const json = await res.json();
+		
+		if (res.ok) {
+		} else {
+			throw new Error(json.error);
+		}
 	}
 
 	reset();
