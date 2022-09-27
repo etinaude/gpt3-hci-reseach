@@ -83,7 +83,7 @@
 	}
 
 	function reset() {
-		if (questionCount < 2) {
+		if (questionCount < 10) {
 			story = 'Loading';
 			emotion = '';
 			explaination = '';
