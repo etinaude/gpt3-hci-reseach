@@ -2,7 +2,13 @@
 
 ## Description
 
-TODO
+This app was built to support the experimentation of Group 14's research on project D2. Supervised by Dr Danielle Lottridge.
+
+## How to use
+
+For installation instructions, see below.
+
+[Add our instructions here]
 
 ## Built with
 
@@ -57,5 +63,5 @@ TODO
 | Henry Gann    |                                      |                                         |
 | Lance Zhang   |                                      |                                         |
 | Simon Cheng   |                                      |                                         |
-| Yuwei Shen    |                                      |                                         |
+| Yuwei Shen    |                                      | [alieevee](https://github.com/alieevee) |
 | Balaram Panda |                                      |                                         |
