@@ -65,6 +65,29 @@ button:hover {
 	background-color: var(--primary);
 	transform: translate(0, 2px);
 }
+
+.chart > div {
+	float: left;
+}
+.labels div {
+	font: 10px sans-serif;
+	color: black;
+	text-align: left;
+	padding: 3px;
+	margin: 1px;
+	display: block;
+}
+
+.percentages div {
+	font: 10px sans-serif;
+	background-color: var(--primary);
+	text-align: right;
+	padding: 3px;
+	margin: 1px;
+	color: black;
+	display: block;
+}
+
 select {
 	background-color: transparent;
 	border: 2px solid var(--primary);

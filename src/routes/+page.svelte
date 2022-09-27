@@ -17,10 +17,16 @@
 	let confidence = '5';
 
 	let story = `Loading...`;
-	let computerPrediction = 'This is a sad story';
+	let singleComputerPrediction = '';
 	let storyPrompt = '';
+	let groupIsUncertainty = true;
+	let uncertainties = new Map<string, string>([]);
 
-
+	var data: number[];
+	var labels: string[];
+	labels = [];
+	data = [];
+		
 	onMount(async () => {
 		const firebaseApp = await import('firebase/app');
 		const fireAnalytics = await import('firebase/analytics');
@@ -32,7 +38,7 @@
 		db = fireStore.getFirestore(app);
 	});
 
-	let possibleEmotions = ['happy', 'sad', 'angry', 'scary', 'surprising'];
+	let possibleEmotions = ['fear', 'anger', 'sadness', 'surprise', 'love', 'joy'];
 	let possibleSubjects = [
 		'dawrf',
 		'elf',
@@ -87,15 +93,13 @@
 	async function submit() {
 		state = 'loading';
 		const doc = {
-			computerPrediction,
+			singleComputerPrediction,
 			confidence,
 			emotion,
 			explaination,
 			story,
 			storyPrompt
 		};
-
-		console.log(doc);
 
 		if (!validate()) return;
 
@@ -141,6 +145,7 @@
 	async function getPrompt() {
 		storyPrompt = generatePrompt();
 		story = await gpt3Call(storyPrompt);
+		//story = "There once was a lady named Mary who had a knife in her back. It happened one day when she was walking home from work. She was stabbed by a man who came up behind her and then ran away. The knife was left in her back and she bled to death.";
 
 		getComputerPrediction();
 	}
@@ -167,15 +172,26 @@
 		);
 
 		// Array holding uncertainty information
-		const json = await res.json();
+		const arr = await res.json();
 		
 		if (res.ok) {
+			
+			arr[0].forEach((obj: any) => {
+				uncertainties.set(obj.label, obj.score.toString())
+			});
+			if (groupIsUncertainty) {
+				labels = Array.from(uncertainties.keys());
+				data = Array.from(uncertainties.values()).map(str => {return Number(str)});
+			} else {
+				singleComputerPrediction = [...arr[0].entries()].reduce((a, e ) => e[1] > a[1] ? e : a)[1].label;
+			}
 		} else {
-			throw new Error(json.error);
+			throw new Error(arr.error);
 		}
 	}
 
 	reset();
+
 </script>
 
 <svelte:head>
@@ -184,11 +200,32 @@
 </svelte:head>
 
 <section>
-	<h2>What emotion is convyed in this story?</h2>
+	<h2>What emotion is conveyed in this story?</h2>
 	<div class="story">{story}</div>
 
 	<h3>The computer thinks this:</h3>
-	<div class="prediction">{computerPrediction}</div>
+	<div class="prediction">
+		{#if groupIsUncertainty}
+			<div class="chart">
+				<div class="labels">
+					{#each labels as l}
+						<div>
+							{l}
+						</div>
+					{/each}
+				</div>
+				<div class="percentages">
+					{#each data as d}
+						<div style="width: {d*700}px">
+							{parseFloat(d.toFixed(4))*100}%
+						</div>
+					{/each}
+				</div>
+			</div>
+		{:else}
+			{singleComputerPrediction}
+		{/if}
+	</div>
 
 	<div class="feedback-cont">
 		<h3>Select emotion showed in text:</h3>
