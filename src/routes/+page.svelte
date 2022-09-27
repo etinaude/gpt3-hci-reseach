@@ -151,8 +151,8 @@
 
 	async function getPrompt() {
 		storyPrompt = generatePrompt();
-		//story = await gpt3Call(storyPrompt);
-		story = "Fred had always been a bit uneasy around knives. He remembered when he was a child, his mother had accidentally cut herself while chopping vegetables and the sight of the blood had made him faint. Even now, as an adult, the sight of blood made him feel queasy. So when Fred found himself alone in a dark alleyway with a man wielding a knife, he was absolutely terrified. He tried to reason with the man, begging him not to hurt him, but it was";
+		story = await gpt3Call(storyPrompt);
+		//story = "Fred had always been a bit uneasy around knives. He remembered when he was a child, his mother had accidentally cut herself while chopping vegetables and the sight of the blood had made him faint. Even now, as an adult, the sight of blood made him feel queasy. So when Fred found himself alone in a dark alleyway with a man wielding a knife, he was absolutely terrified. He tried to reason with the man, begging him not to hurt him, but it was";
 		getComputerPrediction();
 	}
 
