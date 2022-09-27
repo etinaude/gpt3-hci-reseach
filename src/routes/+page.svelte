@@ -19,8 +19,9 @@
 	let story = `Loading...`;
 	let singleComputerPrediction = '';
 	let storyPrompt = '';
-	let groupIsUncertainty = true;
 	let uncertainties = new Map<string, string>([]);
+	let userId = '';
+	let questionCount = 0;
 
 	var data: number[];
 	var labels: string[];
@@ -40,7 +41,7 @@
 
 	let possibleEmotions = ['fear', 'anger', 'sadness', 'surprise', 'love', 'joy'];
 	let possibleSubjects = [
-		'dawrf',
+		'dwarf',
 		'elf',
 		'dragon',
 		'man named Fred',
@@ -82,12 +83,17 @@
 	}
 
 	function reset() {
-		story = 'Loading';
-		emotion = '';
-		explaination = '';
-		confidence = '5';
+		if (questionCount < 2) {
+			story = 'Loading';
+			emotion = '';
+			explaination = '';
+			confidence = '5';
 
-		getPrompt();
+			getPrompt();
+		} else {
+			showThankYou();
+		}
+			
 	}
 
 	async function submit() {
@@ -98,7 +104,8 @@
 			emotion,
 			explaination,
 			story,
-			storyPrompt
+			storyPrompt, 
+			userId,
 		};
 
 		if (!validate()) return;
@@ -108,7 +115,7 @@
 		try {
 			await fireStore.setDoc(fireStore.doc(db, 'docs', uuid), doc);
 			state = 'success';
-
+			questionCount++;
 			reset();
 		} catch {
 			state = 'apiError';
@@ -144,9 +151,8 @@
 
 	async function getPrompt() {
 		storyPrompt = generatePrompt();
-		story = await gpt3Call(storyPrompt);
-		//story = "There once was a lady named Mary who had a knife in her back. It happened one day when she was walking home from work. She was stabbed by a man who came up behind her and then ran away. The knife was left in her back and she bled to death.";
-
+		//story = await gpt3Call(storyPrompt);
+		story = "Fred had always been a bit uneasy around knives. He remembered when he was a child, his mother had accidentally cut herself while chopping vegetables and the sight of the blood had made him faint. Even now, as an adult, the sight of blood made him feel queasy. So when Fred found himself alone in a dark alleyway with a man wielding a knife, he was absolutely terrified. He tried to reason with the man, begging him not to hurt him, but it was";
 		getComputerPrediction();
 	}
 
@@ -179,16 +185,47 @@
 			arr[0].forEach((obj: any) => {
 				uncertainties.set(obj.label, obj.score.toString())
 			});
-			if (groupIsUncertainty) {
-				labels = Array.from(uncertainties.keys());
-				data = Array.from(uncertainties.values()).map(str => {return Number(str)});
-			} else {
-				singleComputerPrediction = [...arr[0].entries()].reduce((a, e ) => e[1] > a[1] ? e : a)[1].label;
-			}
+			//For uncertainties
+			labels = Array.from(uncertainties.keys());
+			data = Array.from(uncertainties.values()).map(str => {return Number(str)});
+			//For single emotion
+			singleComputerPrediction = [...arr[0].entries()].reduce((a, e ) => e[1] > a[1] ? e : a)[1].label;
 		} else {
 			throw new Error(arr.error);
 		}
 	}
+
+	function showQuestions() {
+		if (checkId()){
+			state = '';
+			var userId  = document.getElementById('UserId')!;
+			var questionSection  = document.getElementById('Questions')!;
+			questionSection.style.display = 'flex';
+			userId.style.display = 'none';
+		} else {
+			state = 'badId';
+			setTimeout(() => {
+				state = '';
+			}, 2000);
+		}
+	}
+
+	function checkId() : boolean{
+		console.log(typeof(userId));
+        if (Number.isInteger(parseInt(userId))){
+			console.log(userId)
+            return true;
+        }
+		
+        return false;
+    }
+
+	function showThankYou(){
+        var endSection  = document.getElementById('End')!;
+        var questionSection  = document.getElementById('Questions')!;
+        questionSection.style.display = 'none';
+        endSection.style.display = 'flex';
+    }
 
 	reset();
 
@@ -199,53 +236,67 @@
 	<meta name="description" content="Svelte demo app" />
 </svelte:head>
 
-<section>
-	<h2>What emotion is conveyed in this story?</h2>
-	<div class="story">{story}</div>
-
-	<h3>The computer thinks this:</h3>
-	<div class="prediction">
-		{#if groupIsUncertainty}
-			<div class="chart">
-				<div class="labels">
-					{#each labels as l}
-						<div>
-							{l}
-						</div>
-					{/each}
-				</div>
-				<div class="percentages">
-					{#each data as d}
-						<div style="width: {d*700}px">
-							{parseFloat(d.toFixed(4))*100}%
-						</div>
-					{/each}
-				</div>
-			</div>
-		{:else}
-			{singleComputerPrediction}
-		{/if}
-	</div>
-
-	<div class="feedback-cont">
-		<h3>Select emotion showed in text:</h3>
-
-		<select bind:value={emotion}>
-			{#each possibleEmotions as opt}
-				<option value={opt}>{opt}</option>
-			{/each}
-		</select>
-
-		<h3>Why did you pick this?:</h3>
-		<textarea bind:value={explaination} />
-
-		<h3>How confident are you?:</h3>
-		<input type="range" min="0" max="10" class="slider" bind:value={confidence} />
-		<div>{confidence}0%</div>
-
-		<button on:click={() => submit()}> Submit </button>
-	</div>
+<section id=UserId>
+	<h2>Enter your user ID</h2>
+	<input class="userId" bind:value={userId} />
+	<button on:click={() => showQuestions()}> Proceed </button>
 </section>
+
+<section id=Questions style="display: none">
+		<h2>What emotion is conveyed in this story?</h2>
+		<div class="story">{story}</div>
+
+		<h3>The computer thinks this:</h3>
+		<div class="prediction">
+			{#if parseInt(userId) % 2 == 0}
+				<div class="chart">
+					<div class="labels">
+						{#each labels as l}
+							<div>
+								{l}
+							</div>
+						{/each}
+					</div>
+					<div class="percentages">
+						{#each data as d}
+							<div style="width: {d*700}px">
+								{(parseFloat(d.toFixed(4))*100).toFixed(2)}%
+							</div>
+						{/each}
+					</div>
+				</div>
+			{:else}
+				{singleComputerPrediction}
+			{/if}
+		</div>
+
+		<div class="feedback-cont">
+			<h3>Select emotion showed in text:</h3>
+
+			<select bind:value={emotion}>
+				{#each possibleEmotions as opt}
+					<option value={opt}>{opt}</option>
+				{/each}
+			</select>
+
+			<h3>Why did you pick this?:</h3>
+			<textarea bind:value={explaination} />
+
+			<h3>How confident are you?:</h3>
+			<input type="range" min="0" max="10" class="slider" bind:value={confidence} />
+			<div>{confidence}0%</div>
+
+			<button on:click={() => submit()}> Submit </button>
+		</div>
+
+</section>
+
+<section id=End style="display: none">
+	<h2>Thanks for participating!</h2>
+</section>
+{#if state === 'badId'}
+	<div class="banner error">Check your ID! Should be a number.</div>
+{/if}
 
 {#if state === 'error'}
 	<div class="banner error">Please fill in all the fields</div>
