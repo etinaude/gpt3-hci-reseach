@@ -39,7 +39,7 @@
 		db = fireStore.getFirestore(app);
 	});
 
-	let possibleEmotions = ['fear', 'anger', 'sadness', 'surprise', 'love', 'joy'];
+	let possibleEmotions = ['admiration', 'adoration', 'appreciation',  'amusement', 'anxiety', 'awe', 'awkwardness', 'boredom',  'calmness', 'confusion', 'craving', 'disgust', 'pain',  'entrancement', 'excitement', 'horror', 'interest', 'nostalgia',  'relief', 'romance','satisfaction'];
 	let possibleSubjects = [
 		'dwarf',
 		'elf',
@@ -49,19 +49,25 @@
 		'pixie',
 		'thief',
 		'wizard',
-		'archer'
+		'archer',
+		'teacher',
+		'president',
 	];
 	let possibleObjects = [
 		'ball',
-		'knife',
-		'baloon',
+		'balloon',
 		'dog',
 		'cat',
 		'candle',
 		'phone',
 		'lock',
-		'tower'
+		'tower',
+		'laptop',
+		'hammer',
+		'sled',
+		'tree'
 	];
+	let bertEmotions = ['joy', 'love', 'surprise', 'anger', 'sadness', 'fear'];
 
 	const configuration = new Configuration({
 		apiKey
@@ -274,7 +280,7 @@
 			<h3>Select emotion showed in text:</h3>
 
 			<select bind:value={emotion}>
-				{#each possibleEmotions as opt}
+				{#each bertEmotions as opt}
 					<option value={opt}>{opt}</option>
 				{/each}
 			</select>
