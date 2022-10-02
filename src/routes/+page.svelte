@@ -16,6 +16,7 @@
 
 	let emotion = '';
 	let explanation = '';
+	let customAnswer = '';
 	let confidence = '5';
 
 	let stories : string[];
@@ -95,7 +96,7 @@
 
 
 	function validate(): boolean {
-		if (!emotion || !explanation) {
+		if (!emotion || !explanation || !customAnswer) {
 			state = 'error';
 
 			setTimeout(() => {
@@ -114,6 +115,7 @@
 			story = 'Loading';
 			emotion = '';
 			explanation = '';
+			customAnswer = '';
 			confidence = '5';
 			if (questionCount != 0){
 				getUncertaintyInformation();
@@ -132,6 +134,7 @@
 			confidence,
 			emotion,
 			explanation,
+			customAnswer,
 			story,
 			userId,
 		};
@@ -239,7 +242,7 @@
 	}
 
 	function checkId() : boolean{
-        if (Number.isInteger(parseInt(userId))){
+        if (Number.isInteger(parseInt(userId)) && parseInt(userId) <= 100 && parseInt(userId) >= 0){
             return true;
         }
 		
@@ -287,19 +290,19 @@
 
 		<h3>The computer thinks this:</h3>
 		<div class="prediction">
-			{#if parseInt(userId) % 2 == 0}
+			{#if parseInt(userId) > 50}
 				<div class="chart">
 					<div class="labels">
 						{#each labels as l}
-							<div>
-								{l}
+							<div style="height: 20px; margin-bottom: 10px">
+								<span style="font-size: {15}px">{l}</span>
 							</div>
 						{/each}
 					</div>
 					<div class="percentages">
 						{#each data as d}
-							<div style="width: {d*5}px">
-								{d}%
+							<div style="width: {d*5}px; height: 20px; margin-bottom: 10px">
+								<span style="font-size: {15}px">{d}%</span>
 							</div>
 						{/each}
 					</div>
@@ -310,7 +313,14 @@
 		</div>
 
 		<div class="feedback-cont">
-			<h3>Select emotion showed in text:</h3>
+			
+			<h3>What do you think the emotion showned in the story is? (describe in your own words):</h3>
+			<textarea bind:value={customAnswer} />
+
+			<br/>
+			<br/>
+ 
+			<h3>Select emotion showed in the story:</h3>
 
 			<select bind:value={emotion}>
 				{#each bertEmotions as opt}
@@ -318,12 +328,15 @@
 				{/each}
 			</select>
 
-			<h3>Why did you pick this?:</h3>
+			<h3>Why did you select this emotion?:</h3>
 			<textarea bind:value={explanation} />
 
 			<h3>How confident are you?:</h3>
 			<input type="range" min="0" max="10" class="slider" bind:value={confidence} />
 			<div>{confidence}0%</div>
+
+			<br/>
+			<br/>
 
 			<button on:click={() => submit()}> Submit </button>
 		</div>
@@ -334,7 +347,7 @@
 	<h2>Thanks for participating!</h2>
 </section>
 {#if state === 'badId'}
-	<div class="banner error">Check your ID! Should be a number.</div>
+	<div class="banner error">Check your ID! Should be a positive number and equal or less than 100.</div>
 {/if}
 
 {#if state === 'error'}
