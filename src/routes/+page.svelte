@@ -14,6 +14,7 @@
 
 	let emotion = '';
 	let explaination = '';
+	let customAnswer = '';
 	let confidence = '5';
 
 	let story = `Loading...`;
@@ -75,7 +76,7 @@
 	const openai = new OpenAIApi(configuration);
 
 	function validate(): boolean {
-		if (!emotion || !explaination) {
+		if (!emotion || !explaination || !customAnswer) {
 			state = 'error';
 
 			setTimeout(() => {
@@ -93,6 +94,7 @@
 			story = 'Loading';
 			emotion = '';
 			explaination = '';
+			customAnswer = '';
 			confidence = '5';
 
 			getPrompt();
@@ -109,6 +111,7 @@
 			confidence,
 			emotion,
 			explaination,
+			customAnswer,
 			story,
 			storyPrompt, 
 			userId,
@@ -288,7 +291,14 @@
 		</div>
 
 		<div class="feedback-cont">
-			<h3>Select emotion showed in text:</h3>
+			
+			<h3>What do you think the emotion showned in the story is? (describe in your own words):</h3>
+			<textarea bind:value={customAnswer} />
+
+			<br/>
+			<br/>
+ 
+			<h3>Select emotion showed in the story:</h3>
 
 			<select bind:value={emotion}>
 				{#each bertEmotions as opt}
@@ -296,12 +306,15 @@
 				{/each}
 			</select>
 
-			<h3>Why did you pick this?:</h3>
+			<h3>Why did you select this emotion?:</h3>
 			<textarea bind:value={explaination} />
 
 			<h3>How confident are you?:</h3>
 			<input type="range" min="0" max="10" class="slider" bind:value={confidence} />
 			<div>{confidence}0%</div>
+
+			<br/>
+			<br/>
 
 			<button on:click={() => submit()}> Submit </button>
 		</div>
