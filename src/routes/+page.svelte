@@ -130,13 +130,14 @@
 	async function submit() {
 		state = 'loading';
 		const doc = {
+			userId,
+			questionCount,
 			singleComputerPrediction,
 			confidence,
 			emotion,
 			explanation,
 			customAnswer,
 			story,
-			userId,
 		};
 
 		if (!validate()) return;
@@ -285,7 +286,8 @@
 </section>
 
 <section id=Questions style="display: none">
-		<h2>What emotion is conveyed in this story?</h2>
+		<h2>Question {questionCount+1}</h2>
+		<h3>What emotion is conveyed in this story?</h3>
 		<div class="story">{story}</div>
 
 		<h3>The computer thinks this:</h3>
