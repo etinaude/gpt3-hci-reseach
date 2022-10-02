@@ -5,6 +5,8 @@
 	import firebaseConfig from '../keys/firebase';
 	import apiKey from '../keys/openAI';
 	import huggableKey from '../keys/huggable';
+	import { collection, getDocs } from "firebase/firestore"; 
+	import { setUserProperties } from 'firebase/analytics';
 
 	let fireStore: any;
 	let app: any;
@@ -13,12 +15,12 @@
 	let state = '';
 
 	let emotion = '';
-	let explaination = '';
+	let explanation = '';
 	let confidence = '5';
 
+	let stories : string[];
 	let story = `Loading...`;
 	let singleComputerPrediction = '';
-	let storyPrompt = '';
 	let uncertainties = new Map<string, string>([]);
 	let userId = '';
 	let questionCount = 0;
@@ -31,13 +33,23 @@
 	onMount(async () => {
 		const firebaseApp = await import('firebase/app');
 		const fireAnalytics = await import('firebase/analytics');
-		fireStore = await import('firebase/firestore/lite');
+		fireStore = await import('firebase/firestore');
 
 		// Initialize Firebase
 		app = firebaseApp.initializeApp(firebaseConfig);
 		const analytics = fireAnalytics.getAnalytics(app);
 		db = fireStore.getFirestore(app);
+		
+		const snapshot = await getDocs(collection(db, "stories"));
+		snapshot.forEach((doc) => {
+			getStoriesAndClassification(doc.data().story, doc.data().emotions);
+		});
 	});
+
+	function getStoriesAndClassification(story : string, emotions : Map<string, number> ){
+		stories.push(story);
+		
+	}
 
 	let possibleEmotions = ['admiration', 'adoration', 'appreciation',  'amusement', 'anxiety', 'awe', 'awkwardness', 'boredom',  'calmness', 'confusion', 'craving', 'disgust', 'pain',  'entrancement', 'excitement', 'horror', 'interest', 'nostalgia',  'relief', 'romance','satisfaction'];
 	let possibleSubjects = [
@@ -75,7 +87,7 @@
 	const openai = new OpenAIApi(configuration);
 
 	function validate(): boolean {
-		if (!emotion || !explaination) {
+		if (!emotion || !explanation) {
 			state = 'error';
 
 			setTimeout(() => {
@@ -92,14 +104,19 @@
 		if (questionCount < 10) {
 			story = 'Loading';
 			emotion = '';
-			explaination = '';
+			explanation = '';
 			confidence = '5';
 
-			getPrompt();
+			getStory();
+			//getPrompt();
 		} else {
 			showThankYou();
 		}
 			
+	}
+
+	function getStory(){
+
 	}
 
 	async function submit() {
@@ -108,9 +125,8 @@
 			singleComputerPrediction,
 			confidence,
 			emotion,
-			explaination,
+			explanation,
 			story,
-			storyPrompt, 
 			userId,
 		};
 
@@ -156,16 +172,16 @@
 	}
 
 	async function getPrompt() {
-		storyPrompt = generatePrompt();
-		story = await gpt3Call(storyPrompt);
-		//story = "Fred had always been a bit uneasy around knives. He remembered when he was a child, his mother had accidentally cut herself while chopping vegetables and the sight of the blood had made him faint. Even now, as an adult, the sight of blood made him feel queasy. So when Fred found himself alone in a dark alleyway with a man wielding a knife, he was absolutely terrified. He tried to reason with the man, begging him not to hurt him, but it was";
-		getComputerPrediction();
+		/* storyPrompt = generatePrompt();
+		story = await gpt3Call(storyPrompt); */
+		
+		//getComputerPrediction();
 	}
 
 	async function getComputerPrediction() {
 		let prompt = `What emotion is this story ${story}?`;
 
-		await getUncertaintyInformation(story);
+		//await getUncertaintyInformation(story);
 	}
 
 	async function getUncertaintyInformation(story: string){
@@ -297,7 +313,7 @@
 			</select>
 
 			<h3>Why did you pick this?:</h3>
-			<textarea bind:value={explaination} />
+			<textarea bind:value={explanation} />
 
 			<h3>How confident are you?:</h3>
 			<input type="range" min="0" max="10" class="slider" bind:value={confidence} />
