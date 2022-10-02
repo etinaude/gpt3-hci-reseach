@@ -273,14 +273,14 @@
 					<div class="labels">
 						{#each labels as l}
 							<div>
-								{l}
+								<span style="font-size: {15}px">{l}</span>
 							</div>
 						{/each}
 					</div>
 					<div class="percentages">
 						{#each data as d}
-							<div style="width: {d*700}px">
-								{(parseFloat(d.toFixed(4))*100).toFixed(2)}%
+							<div style="width: {d*700}px; height: {20}px">
+								<span style="font-size: {15}px">{(parseFloat(d.toFixed(4))*100).toFixed(2)}%</span>
 							</div>
 						{/each}
 					</div>
