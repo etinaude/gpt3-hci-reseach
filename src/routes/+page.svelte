@@ -220,7 +220,7 @@
 	}
 
 	function checkId() : boolean{
-        if (Number.isInteger(parseInt(userId)) && parseInt(userId) <= 100){
+        if (Number.isInteger(parseInt(userId)) && parseInt(userId) <= 100 && parseInt(userId) >= 0){
             return true;
         }
 		
@@ -325,7 +325,7 @@
 	<h2>Thanks for participating!</h2>
 </section>
 {#if state === 'badId'}
-	<div class="banner error">Check your ID! Should be a number and equal or less than 100.</div>
+	<div class="banner error">Check your ID! Should be a positive number and equal or less than 100.</div>
 {/if}
 
 {#if state === 'error'}
