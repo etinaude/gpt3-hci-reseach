@@ -268,7 +268,7 @@
 
 		<h3>The computer thinks this:</h3>
 		<div class="prediction">
-			{#if parseInt(userId) % 2 == 0}
+			{#if parseInt(userId) > 50}
 				<div class="chart">
 					<div class="labels">
 						{#each labels as l}
