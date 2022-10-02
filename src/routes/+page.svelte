@@ -3,10 +3,10 @@
 	import { onMount } from 'svelte';
 	import { v4 as uuidv4 } from 'uuid';
 	import firebaseConfig from '../keys/firebase';
-	import apiKey from '../keys/openAI';
+	import { collection, doc, getDocs } from "firebase/firestore"; 
+	/* import apiKey from '../keys/openAI';
 	import huggableKey from '../keys/huggable';
-	import { collection, getDocs } from "firebase/firestore"; 
-	import { setUserProperties } from 'firebase/analytics';
+	import { setUserProperties } from 'firebase/analytics'; */
 
 	let fireStore: any;
 	let app: any;
@@ -21,6 +21,7 @@
 	let stories : string[];
 	let story = `Loading...`;
 	let singleComputerPrediction = '';
+	let allUncertainties : { id: string, emotions : Map<string, number>}[];
 	let uncertainties = new Map<string, string>([]);
 	let userId = '';
 	let questionCount = 0;
@@ -39,19 +40,30 @@
 		app = firebaseApp.initializeApp(firebaseConfig);
 		const analytics = fireAnalytics.getAnalytics(app);
 		db = fireStore.getFirestore(app);
-		
-		const snapshot = await getDocs(collection(db, "stories"));
-		snapshot.forEach((doc) => {
-			getStoriesAndClassification(doc.data().story, doc.data().emotions);
-		});
+		setup();
 	});
 
-	function getStoriesAndClassification(story : string, emotions : Map<string, number> ){
-		stories.push(story);
-		
+	async function setup(){
+		const snapshot = await getDocs(collection(db, "stories"));
+		stories = [];
+		allUncertainties = [];
+		snapshot.forEach((doc) => {
+			getStoriesAndClassification(doc.id, doc.data().story, doc.data().emotions);
+		});
+		console.log(stories);
+		console.log(allUncertainties);
+		story = stories[questionCount];
+		labels = ['anger', 'fear', 'joy', 'love', 'sadness', 'surprise'];
+		data = [64.32, 2.77, 41, 0.36, 1.59, 0.63];
+		singleComputerPrediction = 'anger';
 	}
 
-	let possibleEmotions = ['admiration', 'adoration', 'appreciation',  'amusement', 'anxiety', 'awe', 'awkwardness', 'boredom',  'calmness', 'confusion', 'craving', 'disgust', 'pain',  'entrancement', 'excitement', 'horror', 'interest', 'nostalgia',  'relief', 'romance','satisfaction'];
+	function getStoriesAndClassification(id: string, story : string, emotions : Map<string, number> ){
+		stories.push(story);
+		allUncertainties.push({id, emotions});
+	}
+
+	/* let possibleEmotions = ['admiration', 'adoration', 'appreciation',  'amusement', 'anxiety', 'awe', 'awkwardness', 'boredom',  'calmness', 'confusion', 'craving', 'disgust', 'pain',  'entrancement', 'excitement', 'horror', 'interest', 'nostalgia',  'relief', 'romance','satisfaction'];
 	let possibleSubjects = [
 		'dwarf',
 		'elf',
@@ -78,13 +90,9 @@
 		'hammer',
 		'sled',
 		'tree'
-	];
-	let bertEmotions = ['joy', 'love', 'surprise', 'anger', 'sadness', 'fear'];
+	]; */
+	let bertEmotions = ['joy', 'love', 'surprise', 'anger', 'sadness', 'fear']; 
 
-	const configuration = new Configuration({
-		apiKey
-	});
-	const openai = new OpenAIApi(configuration);
 
 	function validate(): boolean {
 		if (!emotion || !explanation) {
@@ -101,23 +109,21 @@
 	}
 
 	function reset() {
+		console.log(questionCount);
 		if (questionCount < 10) {
 			story = 'Loading';
 			emotion = '';
 			explanation = '';
 			confidence = '5';
-
-			getStory();
-			//getPrompt();
+			if (questionCount != 0){
+				getUncertaintyInformation();
+			}
 		} else {
 			showThankYou();
 		}
 			
 	}
 
-	function getStory(){
-
-	}
 
 	async function submit() {
 		state = 'loading';
@@ -148,19 +154,19 @@
 		}, 2000);
 	}
 
-	function pickRandomItem(items: any[]) {
+	/* function pickRandomItem(items: any[]) {
 		return items[Math.floor(Math.random() * items.length)];
-	}
+	} */
 
-	function generatePrompt(): string {
+	/* function generatePrompt(): string {
 		let emotion = pickRandomItem(possibleEmotions);
 		let subject = pickRandomItem(possibleSubjects);
 		let object = pickRandomItem(possibleObjects);
 
 		return `Tell me a long ${emotion} story about a ${subject} who had a ${object}`;
-	}
+	} */
 
-	async function gpt3Call(prompt: string): Promise<string> {
+	/*async function gpt3Call(prompt: string): Promise<string> {
 		const completion = await openai.createCompletion({
 			model: 'text-davinci-002',
 			prompt: prompt,
@@ -169,22 +175,23 @@
 		});
 
 		return completion.data.choices![0].text!;
-	}
+	}*/
 
-	async function getPrompt() {
-		/* storyPrompt = generatePrompt();
-		story = await gpt3Call(storyPrompt); */
+	/* async function getPrompt() {
+		storyPrompt = generatePrompt();
+		story = await gpt3Call(storyPrompt); 
 		
 		//getComputerPrediction();
-	}
+	} */
 
-	async function getComputerPrediction() {
+	/* async function getComputerPrediction() {
 		let prompt = `What emotion is this story ${story}?`;
 
-		//await getUncertaintyInformation(story);
-	}
+		await getUncertaintyInformation(story);
+	} */
 
-	async function getUncertaintyInformation(story: string){
+	async function getUncertaintyInformation(){
+		/* console.log('here');
 
 		const headers = new Headers({ Authorization: `Bearer ${huggableKey}` });
 
@@ -199,22 +206,21 @@
 			options
 		);
 
-		// Array holding uncertainty information
-		const arr = await res.json();
+		//Array holding uncertainty information
+		const arr = await res.json(); */
 		
-		if (res.ok) {
-			
-			arr[0].forEach((obj: any) => {
-				uncertainties.set(obj.label, obj.score.toString())
-			});
-			//For uncertainties
-			labels = Array.from(uncertainties.keys());
-			data = Array.from(uncertainties.values()).map(str => {return Number(str)});
-			//For single emotion
-			singleComputerPrediction = [...arr[0].entries()].reduce((a, e ) => e[1] > a[1] ? e : a)[1].label;
-		} else {
-			throw new Error(arr.error);
-		}
+		console.log(typeof allUncertainties[questionCount].emotions);
+		Object.entries(allUncertainties[questionCount].emotions).forEach(([key, value])=> {
+			uncertainties.set(key, value.toString())
+		});
+		console.log(uncertainties);
+		//For uncertainties
+		labels = Array.from(uncertainties.keys());
+		data = Array.from(uncertainties.values()).map(str => {return Number(str)});
+		story = stories[questionCount];
+		//For single emotion
+		singleComputerPrediction = [...uncertainties.entries()].reduce((a, e ) => e[1] > a[1] ? e : a)[0];
+		
 	}
 
 	function showQuestions() {
@@ -292,8 +298,8 @@
 					</div>
 					<div class="percentages">
 						{#each data as d}
-							<div style="width: {d*700}px">
-								{(parseFloat(d.toFixed(4))*100).toFixed(2)}%
+							<div style="width: {d*5}px">
+								{d}%
 							</div>
 						{/each}
 					</div>
