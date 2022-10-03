@@ -1,3 +1,3 @@
 [build]
-  command = "echo $FIREBASE | base64 -di > src/keys/firebase.ts ; npm run build"
+  command = "echo $FIREBASE | base64 -di > src/keys/firebase.ts; npm run build"
   publish = "build"
