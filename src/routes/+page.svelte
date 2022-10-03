@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { v4 as uuidv4 } from 'uuid';
-	import firebaseConfig from './../keys/firebases';
+	import firebaseConfig from './../keys/firebase';
 	import { collection, doc, getDocs } from 'firebase/firestore';
 	// import { Configuration, OpenAIApi } from 'openai';
 	/* import apiKey from '../keys/openAI';
