@@ -1,9 +1,9 @@
 <script lang="ts">
-	import { Configuration, OpenAIApi } from 'openai';
 	import { onMount } from 'svelte';
 	import { v4 as uuidv4 } from 'uuid';
-	import firebaseConfig from '../keys/firebase';
+	import firebaseConfig from './../keys/firebases';
 	import { collection, doc, getDocs } from 'firebase/firestore';
+	// import { Configuration, OpenAIApi } from 'openai';
 	/* import apiKey from '../keys/openAI';
 	import huggableKey from '../keys/huggable';
 	import { setUserProperties } from 'firebase/analytics'; */
