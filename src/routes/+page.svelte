@@ -1,12 +1,8 @@
 <script lang="ts">
-	import { Configuration, OpenAIApi } from 'openai';
 	import { onMount } from 'svelte';
 	import { v4 as uuidv4 } from 'uuid';
 	import firebaseConfig from '../keys/firebase';
-	import { collection, doc, getDocs } from "firebase/firestore"; 
-	/* import apiKey from '../keys/openAI';
-	import huggableKey from '../keys/huggable';
-	import { setUserProperties } from 'firebase/analytics'; */
+	import { collection, doc, getDocs } from 'firebase/firestore';
 
 	let fireStore: any;
 	let app: any;
@@ -19,10 +15,10 @@
 	let customAnswer = '';
 	let confidence = '5';
 
-	let stories : string[];
+	let stories: string[];
 	let story = `Loading...`;
 	let singleComputerPrediction = '';
-	let allUncertainties : { id: string, emotions : Map<string, number>}[];
+	let allUncertainties: { id: string; emotions: Map<string, number> }[];
 	let uncertainties = new Map<string, string>([]);
 	let userId = '';
 	let questionCount = 0;
@@ -31,7 +27,7 @@
 	var labels: string[];
 	labels = [];
 	data = [];
-		
+
 	onMount(async () => {
 		const firebaseApp = await import('firebase/app');
 		const fireAnalytics = await import('firebase/analytics');
@@ -44,8 +40,8 @@
 		setup();
 	});
 
-	async function setup(){
-		const snapshot = await getDocs(collection(db, "stories"));
+	async function setup() {
+		const snapshot = await getDocs(collection(db, 'stories'));
 		stories = [];
 		allUncertainties = [];
 		snapshot.forEach((doc) => {
@@ -59,41 +55,11 @@
 		singleComputerPrediction = 'anger';
 	}
 
-	function getStoriesAndClassification(id: string, story : string, emotions : Map<string, number> ){
+	function getStoriesAndClassification(id: string, story: string, emotions: Map<string, number>) {
 		stories.push(story);
-		allUncertainties.push({id, emotions});
+		allUncertainties.push({ id, emotions });
 	}
-
-	/* let possibleEmotions = ['admiration', 'adoration', 'appreciation',  'amusement', 'anxiety', 'awe', 'awkwardness', 'boredom',  'calmness', 'confusion', 'craving', 'disgust', 'pain',  'entrancement', 'excitement', 'horror', 'interest', 'nostalgia',  'relief', 'romance','satisfaction'];
-	let possibleSubjects = [
-		'dwarf',
-		'elf',
-		'dragon',
-		'man named Fred',
-		'lady named Mary',
-		'pixie',
-		'thief',
-		'wizard',
-		'archer',
-		'teacher',
-		'president',
-	];
-	let possibleObjects = [
-		'ball',
-		'balloon',
-		'dog',
-		'cat',
-		'candle',
-		'phone',
-		'lock',
-		'tower',
-		'laptop',
-		'hammer',
-		'sled',
-		'tree'
-	]; */
-	let bertEmotions = ['joy', 'love', 'surprise', 'anger', 'sadness', 'fear']; 
-
+	let bertEmotions = ['joy', 'love', 'surprise', 'anger', 'sadness', 'fear'];
 
 	function validate(): boolean {
 		if (!emotion || !explanation || !customAnswer) {
@@ -110,22 +76,19 @@
 	}
 
 	function reset() {
-		console.log(questionCount);
 		if (questionCount < 10) {
 			story = 'Loading';
 			emotion = '';
 			explanation = '';
 			customAnswer = '';
 			confidence = '5';
-			if (questionCount != 0){
+			if (questionCount != 0) {
 				getUncertaintyInformation();
 			}
 		} else {
 			showThankYou();
 		}
-			
 	}
-
 
 	async function submit() {
 		state = 'loading';
@@ -137,7 +100,7 @@
 			emotion,
 			explanation,
 			customAnswer,
-			story,
+			story
 		};
 
 		if (!validate()) return;
@@ -158,80 +121,29 @@
 		}, 2000);
 	}
 
-	/* function pickRandomItem(items: any[]) {
-		return items[Math.floor(Math.random() * items.length)];
-	} */
-
-	/* function generatePrompt(): string {
-		let emotion = pickRandomItem(possibleEmotions);
-		let subject = pickRandomItem(possibleSubjects);
-		let object = pickRandomItem(possibleObjects);
-
-		return `Tell me a long ${emotion} story about a ${subject} who had a ${object}`;
-	} */
-
-	/*async function gpt3Call(prompt: string): Promise<string> {
-		const completion = await openai.createCompletion({
-			model: 'text-davinci-002',
-			prompt: prompt,
-			temperature: 0.6,
-			max_tokens: 100
-		});
-
-		return completion.data.choices![0].text!;
-	}*/
-
-	/* async function getPrompt() {
-		storyPrompt = generatePrompt();
-		story = await gpt3Call(storyPrompt); 
-		
-		//getComputerPrediction();
-	} */
-
-	/* async function getComputerPrediction() {
-		let prompt = `What emotion is this story ${story}?`;
-
-		await getUncertaintyInformation(story);
-	} */
-
-	async function getUncertaintyInformation(){
-		/* console.log('here');
-
-		const headers = new Headers({ Authorization: `Bearer ${huggableKey}` });
-
-		const options = {
-			method: 'POST',
-			headers,
-			body: JSON.stringify(story)
-		};
-
-		const res = await fetch(
-			`https://api-inference.huggingface.co/models/bhadresh-savani/bert-base-uncased-emotion/`,
-			options
-		);
-
-		//Array holding uncertainty information
-		const arr = await res.json(); */
-		
+	async function getUncertaintyInformation() {
 		console.log(typeof allUncertainties[questionCount].emotions);
-		Object.entries(allUncertainties[questionCount].emotions).forEach(([key, value])=> {
-			uncertainties.set(key, value.toString())
+		Object.entries(allUncertainties[questionCount].emotions).forEach(([key, value]) => {
+			uncertainties.set(key, value.toString());
 		});
 		console.log(uncertainties);
 		//For uncertainties
 		labels = Array.from(uncertainties.keys());
-		data = Array.from(uncertainties.values()).map(str => {return Number(str)});
+		data = Array.from(uncertainties.values()).map((str) => {
+			return Number(str);
+		});
 		story = stories[questionCount];
 		//For single emotion
-		singleComputerPrediction = [...uncertainties.entries()].reduce((a, e ) => e[1] > a[1] ? e : a)[0];
-		
+		singleComputerPrediction = [...uncertainties.entries()].reduce((a, e) =>
+			e[1] > a[1] ? e : a
+		)[0];
 	}
 
 	function showQuestions() {
-		if (checkId()){
+		if (checkId()) {
 			state = '';
-			var userId  = document.getElementById('UserId')!;
-			var questionSection  = document.getElementById('Questions')!;
+			var userId = document.getElementById('UserId')!;
+			var questionSection = document.getElementById('Questions')!;
 			questionSection.style.display = 'flex';
 			userId.style.display = 'none';
 		} else {
@@ -242,23 +154,22 @@
 		}
 	}
 
-	function checkId() : boolean{
-        if (Number.isInteger(parseInt(userId)) && parseInt(userId) <= 100 && parseInt(userId) >= 0){
-            return true;
-        }
-		
-        return false;
-    }
+	function checkId(): boolean {
+		if (Number.isInteger(parseInt(userId)) && parseInt(userId) <= 100 && parseInt(userId) >= 0) {
+			return true;
+		}
 
-	function showThankYou(){
-        var endSection  = document.getElementById('End')!;
-        var questionSection  = document.getElementById('Questions')!;
-        questionSection.style.display = 'none';
-        endSection.style.display = 'flex';
-    }
+		return false;
+	}
+
+	function showThankYou() {
+		var endSection = document.getElementById('End')!;
+		var questionSection = document.getElementById('Questions')!;
+		questionSection.style.display = 'none';
+		endSection.style.display = 'flex';
+	}
 
 	reset();
-
 </script>
 
 <svelte:head>
@@ -285,71 +196,71 @@
 	<button on:click={() => showQuestions()}> Proceed </button>
 </section>
 
-<section id=Questions style="display: none">
-		<h2>Question {questionCount+1}</h2>
-		<h3>What emotion is conveyed in this story?</h3>
-		<div class="story">{story}</div>
+<section id="Questions" style="display: none">
+	<h2>Question {questionCount + 1}</h2>
+	<h3>What emotion is conveyed in this story?</h3>
+	<div class="story">{story}</div>
 
-		<h3>The computer thinks this:</h3>
-		<div class="prediction">
-			{#if parseInt(userId) > 50}
-				<div class="chart">
-					<div class="labels">
-						{#each labels as l}
-							<div style="height: 20px; margin-bottom: 10px">
-								<span style="font-size: {15}px">{l}</span>
-							</div>
-						{/each}
-					</div>
-					<div class="percentages">
-						{#each data as d}
-							<div style="width: {d*5}px; height: 20px; margin-bottom: 10px">
-								<span style="font-size: {15}px">{d}%</span>
-							</div>
-						{/each}
-					</div>
+	<h3>The computer thinks this:</h3>
+	<div class="prediction">
+		{#if parseInt(userId) > 50}
+			<div class="chart">
+				<div class="labels">
+					{#each labels as l}
+						<div style="height: 20px; margin-bottom: 10px">
+							<span style="font-size: {15}px">{l}</span>
+						</div>
+					{/each}
 				</div>
-			{:else}
-				{singleComputerPrediction}
-			{/if}
-		</div>
+				<div class="percentages">
+					{#each data as d}
+						<div style="width: {d * 5}px; height: 20px; margin-bottom: 10px">
+							<span style="font-size: {15}px">{d}%</span>
+						</div>
+					{/each}
+				</div>
+			</div>
+		{:else}
+			{singleComputerPrediction}
+		{/if}
+	</div>
 
-		<div class="feedback-cont">
-			
-			<h3>What do you think the emotion showned in the story is? (describe in your own words):</h3>
-			<textarea bind:value={customAnswer} />
+	<div class="feedback-cont">
+		<h3>What do you think the emotion showned in the story is? (describe in your own words):</h3>
+		<textarea bind:value={customAnswer} />
 
-			<br/>
-			<br/>
- 
-			<h3>Select emotion showed in the story:</h3>
+		<br />
+		<br />
 
-			<select bind:value={emotion}>
-				{#each bertEmotions as opt}
-					<option value={opt}>{opt}</option>
-				{/each}
-			</select>
+		<h3>Select emotion showed in the story:</h3>
 
-			<h3>Why did you select this emotion?:</h3>
-			<textarea bind:value={explanation} />
+		<select bind:value={emotion}>
+			{#each bertEmotions as opt}
+				<option value={opt}>{opt}</option>
+			{/each}
+		</select>
 
-			<h3>How confident are you?:</h3>
-			<input type="range" min="0" max="10" class="slider" bind:value={confidence} />
-			<div>{confidence}0%</div>
+		<h3>Why did you select this emotion?:</h3>
+		<textarea bind:value={explanation} />
 
-			<br/>
-			<br/>
+		<h3>How confident are you?:</h3>
+		<input type="range" min="0" max="10" class="slider" bind:value={confidence} />
+		<div>{confidence}0%</div>
 
-			<button on:click={() => submit()}> Submit </button>
-		</div>
+		<br />
+		<br />
 
+		<button on:click={() => submit()}> Submit </button>
+	</div>
 </section>
 
-<section id=End style="display: none">
+<section id="End" style="display: none">
 	<h2>Thanks for participating!</h2>
 </section>
 {#if state === 'badId'}
-	<div class="banner error">Check your ID! Should be a positive number and equal or less than 100.</div>
+	<div class="banner error">
+		Check your ID! Should be a positive number and equal or less than 100.
+	</div>
 {/if}
 
 {#if state === 'error'}
