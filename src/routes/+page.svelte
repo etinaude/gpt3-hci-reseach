@@ -61,6 +61,37 @@
 	}
 	let bertEmotions = ['joy', 'love', 'surprise', 'anger', 'sadness', 'fear'];
 
+	/* let possibleEmotions = ['admiration', 'adoration', 'appreciation',  'amusement', 'anxiety', 'awe', 'awkwardness', 'boredom',  'calmness', 'confusion', 'craving', 'disgust', 'pain',  'entrancement', 'excitement', 'horror', 'interest', 'nostalgia',  'relief', 'romance','satisfaction'];
+	let possibleSubjects = [
+		'dwarf',
+		'elf',
+		'dragon',
+		'man named Fred',
+		'lady named Mary',
+		'pixie',
+		'thief',
+		'wizard',
+		'archer',
+		'teacher',
+		'president',
+	];
+	let possibleObjects = [
+		'ball',
+		'balloon',
+		'dog',
+		'cat',
+		'candle',
+		'phone',
+		'lock',
+		'tower',
+		'laptop',
+		'hammer',
+		'sled',
+		'tree'
+	]; */
+	let bertEmotions = ['joy', 'love', 'surprise', 'anger', 'sadness', 'fear']; 
+
+
 	function validate(): boolean {
 		if (!emotion || !explanation || !customAnswer) {
 			state = 'error';
@@ -121,7 +152,61 @@
 		}, 2000);
 	}
 
-	async function getUncertaintyInformation() {
+	/* function pickRandomItem(items: any[]) {
+		return items[Math.floor(Math.random() * items.length)];
+	} */
+
+	/* function generatePrompt(): string {
+		let emotion = pickRandomItem(possibleEmotions);
+		let subject = pickRandomItem(possibleSubjects);
+		let object = pickRandomItem(possibleObjects);
+
+		return `Tell me a long ${emotion} story about a ${subject} who had a ${object}`;
+	} */
+
+	/*async function gpt3Call(prompt: string): Promise<string> {
+		const completion = await openai.createCompletion({
+			model: 'text-davinci-002',
+			prompt: prompt,
+			temperature: 0.6,
+			max_tokens: 100
+		});
+
+		return completion.data.choices![0].text!;
+	}*/
+
+	/* async function getPrompt() {
+		storyPrompt = generatePrompt();
+		story = await gpt3Call(storyPrompt); 
+		
+		//getComputerPrediction();
+	} */
+
+	/* async function getComputerPrediction() {
+		let prompt = `What emotion is this story ${story}?`;
+
+		await getUncertaintyInformation(story);
+	} */
+
+	async function getUncertaintyInformation(){
+		/* console.log('here');
+
+		const headers = new Headers({ Authorization: `Bearer ${huggableKey}` });
+
+		const options = {
+			method: 'POST',
+			headers,
+			body: JSON.stringify(story)
+		};
+
+		const res = await fetch(
+			`https://api-inference.huggingface.co/models/bhadresh-savani/bert-base-uncased-emotion/`,
+			options
+		);
+
+		//Array holding uncertainty information
+		const arr = await res.json(); */
+		
 		console.log(typeof allUncertainties[questionCount].emotions);
 		Object.entries(allUncertainties[questionCount].emotions).forEach(([key, value]) => {
 			uncertainties.set(key, value.toString());
