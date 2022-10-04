@@ -61,37 +61,6 @@
 	}
 	let bertEmotions = ['joy', 'love', 'surprise', 'anger', 'sadness', 'fear'];
 
-	/* let possibleEmotions = ['admiration', 'adoration', 'appreciation',  'amusement', 'anxiety', 'awe', 'awkwardness', 'boredom',  'calmness', 'confusion', 'craving', 'disgust', 'pain',  'entrancement', 'excitement', 'horror', 'interest', 'nostalgia',  'relief', 'romance','satisfaction'];
-	let possibleSubjects = [
-		'dwarf',
-		'elf',
-		'dragon',
-		'man named Fred',
-		'lady named Mary',
-		'pixie',
-		'thief',
-		'wizard',
-		'archer',
-		'teacher',
-		'president',
-	];
-	let possibleObjects = [
-		'ball',
-		'balloon',
-		'dog',
-		'cat',
-		'candle',
-		'phone',
-		'lock',
-		'tower',
-		'laptop',
-		'hammer',
-		'sled',
-		'tree'
-	]; */
-	let bertEmotions = ['joy', 'love', 'surprise', 'anger', 'sadness', 'fear']; 
-
-
 	function validate(): boolean {
 		if (!emotion || !explanation || !customAnswer) {
 			state = 'error';
@@ -177,8 +146,8 @@
 
 	/* async function getPrompt() {
 		storyPrompt = generatePrompt();
-		story = await gpt3Call(storyPrompt); 
-		
+		story = await gpt3Call(storyPrompt);
+
 		//getComputerPrediction();
 	} */
 
@@ -188,7 +157,7 @@
 		await getUncertaintyInformation(story);
 	} */
 
-	async function getUncertaintyInformation(){
+	async function getUncertaintyInformation() {
 		/* console.log('here');
 
 		const headers = new Headers({ Authorization: `Bearer ${huggableKey}` });
@@ -206,7 +175,7 @@
 
 		//Array holding uncertainty information
 		const arr = await res.json(); */
-		
+
 		console.log(typeof allUncertainties[questionCount].emotions);
 		Object.entries(allUncertainties[questionCount].emotions).forEach(([key, value]) => {
 			uncertainties.set(key, value.toString());
