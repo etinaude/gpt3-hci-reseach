@@ -1,12 +1,8 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { v4 as uuidv4 } from 'uuid';
-	import firebaseConfig from './../keys/firebase';
+	import firebaseConfig from '../keys/firebase';
 	import { collection, doc, getDocs } from 'firebase/firestore';
-	// import { Configuration, OpenAIApi } from 'openai';
-	/* import apiKey from '../keys/openAI';
-	import huggableKey from '../keys/huggable';
-	import { setUserProperties } from 'firebase/analytics'; */
 
 	let fireStore: any;
 	let app: any;
@@ -63,6 +59,7 @@
 		stories.push(story);
 		allUncertainties.push({ id, emotions });
 	}
+	let bertEmotions = ['joy', 'love', 'surprise', 'anger', 'sadness', 'fear'];
 
 	/* let possibleEmotions = ['admiration', 'adoration', 'appreciation',  'amusement', 'anxiety', 'awe', 'awkwardness', 'boredom',  'calmness', 'confusion', 'craving', 'disgust', 'pain',  'entrancement', 'excitement', 'horror', 'interest', 'nostalgia',  'relief', 'romance','satisfaction'];
 	let possibleSubjects = [
@@ -92,7 +89,8 @@
 		'sled',
 		'tree'
 	]; */
-	let bertEmotions = ['joy', 'love', 'surprise', 'anger', 'sadness', 'fear'];
+	let bertEmotions = ['joy', 'love', 'surprise', 'anger', 'sadness', 'fear']; 
+
 
 	function validate(): boolean {
 		if (!emotion || !explanation || !customAnswer) {
@@ -109,7 +107,6 @@
 	}
 
 	function reset() {
-		console.log(questionCount);
 		if (questionCount < 10) {
 			story = 'Loading';
 			emotion = '';
@@ -180,8 +177,8 @@
 
 	/* async function getPrompt() {
 		storyPrompt = generatePrompt();
-		story = await gpt3Call(storyPrompt);
-
+		story = await gpt3Call(storyPrompt); 
+		
 		//getComputerPrediction();
 	} */
 
@@ -191,7 +188,7 @@
 		await getUncertaintyInformation(story);
 	} */
 
-	async function getUncertaintyInformation() {
+	async function getUncertaintyInformation(){
 		/* console.log('here');
 
 		const headers = new Headers({ Authorization: `Bearer ${huggableKey}` });
@@ -209,7 +206,7 @@
 
 		//Array holding uncertainty information
 		const arr = await res.json(); */
-
+		
 		console.log(typeof allUncertainties[questionCount].emotions);
 		Object.entries(allUncertainties[questionCount].emotions).forEach(([key, value]) => {
 			uncertainties.set(key, value.toString());
@@ -287,8 +284,34 @@
 		at all and 100% (right) being very confident.<br />
 	</p>
 	<h3>Enter your user ID</h3>
-	<input class="userId" bind:value={userId} />
-	<button on:click={() => showQuestions()}> Proceed </button>
+
+	<input class="userId" bind:value={userId} placeholder="ID" />
+
+	<hr />
+
+	<h2>Research Concent Form</h2>
+	<h3>THIS FORM WILL BE HELD FOR A PERIOD OF 2 MONTHS</h3>
+
+	<p>
+		Project title: Visualising and supporting uncertainty in emotion recognition displays<br />
+		Name of Supervisor: Danielle Lottridge<br />
+		Name of Student Researcher: Gerald Webber
+	</p>
+
+	<p>
+		I have read the Participant Information Sheet, have understood the nature of the research and
+		why I have been selected. I have had the opportunity to ask questions and have had them answered
+		to my satisfaction.
+		<br />
+		<br />
+		• I agree to take part in this research. <br />
+		• I understand that I am free to withdraw my participation at any time, and to withdraw any data
+		traceable.<br />
+		• I wish / do not wish to receive the summary of findings.<br />
+		• I agree to not disclose anything discussed in the focus group.<br />
+	</p>
+
+	<button on:click={() => showQuestions()} class="proceed"> Agree and Proceed </button>
 </section>
 
 <section id="Questions" style="display: none">
