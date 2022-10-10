@@ -32,8 +32,10 @@
 		display: false
 	};
 
+	//Bert emotions
 	let labels = ['anger', 'fear', 'joy', 'love', 'sadness', 'surprise'];
 
+	//First Question
 	let graph = [
 		{
 			emotion: 'anger',
@@ -72,6 +74,7 @@
 	});
 
 	async function setup() {
+		//stories are stored in a collection in Firestore
 		const snapshot = await getDocs(collection(firebase.db, 'stories'));
 		storyList = [];
 		allUncertainties = [];
@@ -79,6 +82,7 @@
 			getStoriesAndClassification(doc.id, doc.data().story, doc.data().emotions);
 		});
 		currentStory = storyList[questionCount];
+		//First story prediction
 		singleComputerPrediction = 'anger';
 
 		userId = getId();
@@ -149,7 +153,7 @@
 			confidence: userData.confidence,
 			emotion: userData.chosenEmotion,
 			explanation: userData.explanation,
-			customAnswer: userData.customAnswer, //TODO
+			customAnswer: userData.customAnswer,
 			story: currentStory
 		};
 
