@@ -121,61 +121,7 @@
 		}, 2000);
 	}
 
-	/* function pickRandomItem(items: any[]) {
-		return items[Math.floor(Math.random() * items.length)];
-	} */
-
-	/* function generatePrompt(): string {
-		let emotion = pickRandomItem(possibleEmotions);
-		let subject = pickRandomItem(possibleSubjects);
-		let object = pickRandomItem(possibleObjects);
-
-		return `Tell me a long ${emotion} story about a ${subject} who had a ${object}`;
-	} */
-
-	/*async function gpt3Call(prompt: string): Promise<string> {
-		const completion = await openai.createCompletion({
-			model: 'text-davinci-002',
-			prompt: prompt,
-			temperature: 0.6,
-			max_tokens: 100
-		});
-
-		return completion.data.choices![0].text!;
-	}*/
-
-	/* async function getPrompt() {
-		storyPrompt = generatePrompt();
-		story = await gpt3Call(storyPrompt);
-
-		//getComputerPrediction();
-	} */
-
-	/* async function getComputerPrediction() {
-		let prompt = `What emotion is this story ${story}?`;
-
-		await getUncertaintyInformation(story);
-	} */
-
 	async function getUncertaintyInformation() {
-		/* console.log('here');
-
-		const headers = new Headers({ Authorization: `Bearer ${huggableKey}` });
-
-		const options = {
-			method: 'POST',
-			headers,
-			body: JSON.stringify(story)
-		};
-
-		const res = await fetch(
-			`https://api-inference.huggingface.co/models/bhadresh-savani/bert-base-uncased-emotion/`,
-			options
-		);
-
-		//Array holding uncertainty information
-		const arr = await res.json(); */
-
 		console.log(typeof allUncertainties[questionCount].emotions);
 		Object.entries(allUncertainties[questionCount].emotions).forEach(([key, value]) => {
 			uncertainties.set(key, value.toString());
@@ -209,8 +155,11 @@
 	}
 
 	function checkId(): boolean {
-		if (Number.isInteger(parseInt(userId)) && parseInt(userId) <= 100 && parseInt(userId) >= 0) {
-			return true;
+		try {
+			const id = parseFloat(userId);
+			if (id === Math.round(id) && id <= 100 && id >= 0) return true;
+		} catch (e) {
+			console.log(e);
 		}
 
 		return false;
@@ -258,7 +207,7 @@
 
 	<hr />
 
-	<h2>Research Concent Form</h2>
+	<h2>Research Consent Form</h2>
 	<h3>THIS FORM WILL BE HELD FOR A PERIOD OF 2 MONTHS</h3>
 
 	<p>
@@ -313,12 +262,6 @@
 	</div>
 
 	<div class="feedback-cont">
-		<h3>What do you think the emotion showned in the story is? (describe in your own words):</h3>
-		<textarea bind:value={customAnswer} />
-
-		<br />
-		<br />
-
 		<h3>Select emotion showed in the story:</h3>
 
 		<select bind:value={emotion}>
@@ -327,8 +270,17 @@
 			{/each}
 		</select>
 
+		<h3>What do you think the emotion shown in the story is? (if not in the list above)</h3>
+		<textarea bind:value={customAnswer} />
+
+		<br />
+		<br />
+
 		<h3>Why did you select this emotion?:</h3>
 		<textarea bind:value={explanation} />
+
+		<br />
+		<br />
 
 		<h3>How confident are you?:</h3>
 		<input type="range" min="0" max="10" class="slider" bind:value={confidence} />
