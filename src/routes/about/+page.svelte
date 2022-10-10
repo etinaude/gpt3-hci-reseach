@@ -73,7 +73,7 @@
 	<p>
 		Project title: Visualising and supporting uncertainty in emotion recognition displays<br />
 		Name of Supervisor: Danielle Lottridge<br />
-		Name of Student Researcher(s): Group 14 - Balaram, Etienne, Henry, Lance, Raina and Yuwei
+		Name of Student Researcher(s): Group 14 - Balaram Panda, Etienne Naude, Henry Gann, Lance Zhang, Raina Song and Yuwei Shen
 	</p>
 
 	<p>
