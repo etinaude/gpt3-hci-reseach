@@ -6,20 +6,23 @@
 	import { page } from '$app/stores';
 	import Banner from '$lib/Banner.svelte';
 
-	let fireStore: any;
-	let app: any;
-	let db: any;
+	let firebase: any = {
+		fireStore: null,
+		app: null,
+		db: null
+	};
 
-	let emotion = '';
-	let explanation = '';
-	let customAnswer = '';
-	let confidence = '5';
+	let userData = {
+		chosenEmotion: '',
+		explanation: '',
+		customAnswer: '',
+		confidence: '5'
+	};
 
-	let stories: string[];
-	let story = `Loading...`;
+	let storyList: string[];
+	let currentStory = `Loading...`;
 	let singleComputerPrediction = '';
 	let allUncertainties: { id: string; emotions: Map<string, number> }[];
-	let uncertainties = new Map<string, string>([]);
 	let userId = '';
 	let questionCount = 0;
 
@@ -29,33 +32,53 @@
 		display: false
 	};
 
-	var data: number[];
-	var labels: string[];
-	labels = [];
-	data = [];
+	let labels = ['anger', 'fear', 'joy', 'love', 'sadness', 'surprise'];
+
+	let graph = [
+		{
+			emotion: 'anger',
+			probability: 64.32
+		},
+		{
+			emotion: 'joy',
+			probability: 41
+		},
+		{
+			emotion: 'fear',
+			probability: 2.77
+		},
+		{
+			emotion: 'sadness',
+			probability: 1.59
+		},
+		{
+			emotion: 'surprise',
+			probability: 0.63
+		},
+		{
+			emotion: 'love',
+			probability: 0.36
+		}
+	];
 
 	onMount(async () => {
 		const firebaseApp = await import('firebase/app');
-		fireStore = await import('firebase/firestore');
+		firebase.fireStore = await import('firebase/firestore');
 
 		// Initialize Firebase
-		app = firebaseApp.initializeApp(firebaseConfig);
-		db = fireStore.getFirestore(app);
+		firebase.app = firebaseApp.initializeApp(firebaseConfig);
+		firebase.db = firebase.fireStore.getFirestore(firebase.app);
 		setup();
 	});
 
 	async function setup() {
-		const snapshot = await getDocs(collection(db, 'stories'));
-		stories = [];
+		const snapshot = await getDocs(collection(firebase.db, 'stories'));
+		storyList = [];
 		allUncertainties = [];
 		snapshot.forEach((doc) => {
 			getStoriesAndClassification(doc.id, doc.data().story, doc.data().emotions);
 		});
-		console.log(stories);
-		console.log(allUncertainties);
-		story = stories[questionCount];
-		labels = ['anger', 'fear', 'joy', 'love', 'sadness', 'surprise'];
-		data = [64.32, 2.77, 41, 0.36, 1.59, 0.63];
+		currentStory = storyList[questionCount];
 		singleComputerPrediction = 'anger';
 
 		userId = getId();
@@ -75,13 +98,12 @@
 	}
 
 	function getStoriesAndClassification(id: string, story: string, emotions: Map<string, number>) {
-		stories.push(story);
+		storyList.push(story);
 		allUncertainties.push({ id, emotions });
 	}
-	let bertEmotions = ['joy', 'love', 'surprise', 'anger', 'sadness', 'fear'];
 
 	function validate(): boolean {
-		if (!emotion || !explanation || !customAnswer) {
+		if (!(userData.chosenEmotion || userData.customAnswer) || !userData.explanation) {
 			bannerInfo = {
 				style: 'error',
 				text: 'Please fill out all fields',
@@ -99,17 +121,18 @@
 	}
 
 	function reset() {
-		if (questionCount < 10) {
-			story = 'Loading';
-			emotion = '';
-			explanation = '';
-			customAnswer = '';
-			confidence = '5';
-			if (questionCount != 0) {
-				getUncertaintyInformation();
-			}
-		} else {
+		if (questionCount >= 10) {
 			window.location.href = 'thanks';
+			return;
+		}
+
+		currentStory = 'Loading';
+		userData.chosenEmotion = '';
+		userData.explanation = '';
+		userData.customAnswer = '';
+		userData.confidence = '5';
+		if (questionCount != 0) {
+			getUncertaintyInformation();
 		}
 	}
 
@@ -123,11 +146,11 @@
 			userId,
 			questionCount,
 			singleComputerPrediction,
-			confidence,
-			emotion,
-			explanation,
-			customAnswer,
-			story
+			confidence: userData.confidence,
+			emotion: userData.chosenEmotion,
+			explanation: userData.explanation,
+			customAnswer: userData.customAnswer, //TODO
+			story: currentStory
 		};
 
 		if (!validate()) return;
@@ -135,7 +158,7 @@
 		const uuid = uuidv4();
 
 		try {
-			await fireStore.setDoc(fireStore.doc(db, 'docs', uuid), doc);
+			await firebase.fireStore.setDoc(firebase.fireStore.doc(firebase.db, 'docs', uuid), doc);
 			bannerInfo.text = 'Submitted! 🙂';
 			bannerInfo.style = 'success';
 			questionCount++;
@@ -151,21 +174,18 @@
 	}
 
 	async function getUncertaintyInformation() {
-		console.log(typeof allUncertainties[questionCount].emotions);
+		graph = [];
 		Object.entries(allUncertainties[questionCount].emotions).forEach(([key, value]) => {
-			uncertainties.set(key, value.toString());
+			graph.push({ emotion: key, probability: value });
 		});
-		console.log(uncertainties);
+
+		graph.sort((a, b) => b.probability - a.probability);
+
 		//For uncertainties
-		labels = Array.from(uncertainties.keys());
-		data = Array.from(uncertainties.values()).map((str) => {
-			return Number(str);
-		});
-		story = stories[questionCount];
+		currentStory = storyList[questionCount];
+
 		//For single emotion
-		singleComputerPrediction = [...uncertainties.entries()].reduce((a, e) =>
-			e[1] > a[1] ? e : a
-		)[0];
+		singleComputerPrediction = graph[0].emotion;
 	}
 
 	reset();
@@ -176,59 +196,59 @@
 	<meta name="description" content="Svelte demo app" />
 </svelte:head>
 
-<section id="Questions">
-	<h2>Question {questionCount + 1}</h2>
-	<h3>What emotion is conveyed in this story?</h3>
-	<div class="story">{story}</div>
+<h1>Question {questionCount + 1}</h1>
 
-	<h3>The computer thinks this:</h3>
-	<div class="prediction">
-		{#if parseInt(userId) > 50}
-			<div class="chart">
-				<div class="labels">
-					{#each labels as l}
-						<div style="height: 20px; margin-bottom: 10px">
-							<span style="font-size: {15}px">{l}</span>
+<section class="flex-section">
+	<div>
+		<h3>What emotion is conveyed in this story?</h3>
+		<div class="story">{currentStory}</div>
+
+		<h3>The computer thinks this:</h3>
+		<div class="prediction">
+			{#if parseInt(userId) > 50}
+				<div class="chart">
+					{#each graph as datum}
+						<div class="graph">
+							<div>
+								{datum.emotion}
+							</div>
+							<div style="width: {datum.probability * 5}px; " class="data-bar">
+								<div>{datum.probability}%</div>
+							</div>
 						</div>
 					{/each}
 				</div>
-				<div class="percentages">
-					{#each data as d}
-						<div style="width: {d * 5}px; height: 20px; margin-bottom: 10px">
-							<span style="font-size: {15}px">{d}%</span>
-						</div>
-					{/each}
-				</div>
-			</div>
-		{:else}
-			{singleComputerPrediction}
-		{/if}
+			{:else}
+				{singleComputerPrediction}
+			{/if}
+		</div>
 	</div>
 
+	<!-- Feedback form -->
 	<div class="feedback-cont">
 		<h3>Select emotion showed in the story:</h3>
 
-		<select bind:value={emotion}>
-			{#each bertEmotions as opt}
+		<select bind:value={userData.chosenEmotion}>
+			{#each labels as opt}
 				<option value={opt}>{opt}</option>
 			{/each}
 		</select>
 
 		<h3>What do you think the emotion shown in the story is? (if not in the list above)</h3>
-		<textarea bind:value={customAnswer} />
+		<textarea bind:value={userData.customAnswer} />
 
 		<br />
 		<br />
 
 		<h3>Why did you select this emotion?:</h3>
-		<textarea bind:value={explanation} />
+		<textarea bind:value={userData.explanation} />
 
 		<br />
 		<br />
 
 		<h3>How confident are you?:</h3>
-		<input type="range" min="0" max="10" class="slider" bind:value={confidence} />
-		<div>{confidence}0%</div>
+		<input type="range" min="0" max="10" class="slider" bind:value={userData.confidence} />
+		<div>{userData.confidence}0%</div>
 
 		<br />
 		<br />
