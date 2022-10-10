@@ -94,7 +94,7 @@ TODO
 | Dev           | Portfolio                            | GitHub                                  |
 | ------------- | ------------------------------------ | --------------------------------------- |
 | Etienne Naude | [etinaude.dev](https://etinaude.dev) | [etinaude](https://github.com/etinaude) |
-| Raina Song    |                                      |                                         |
+| Raina Song    |                                      | [rainasong](https://github.com/rainasong)                                        |
 | Henry Gann    |                                      |                                         |
 | Lance Zhang   |                                      | [lancelancezhang](https://github.com/lancelancezhang) |
 | Simon Cheng   |                                      |                                         |
