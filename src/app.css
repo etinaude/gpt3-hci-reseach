@@ -1,11 +1,14 @@
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;400;500;700;900&display=swap');
 
 :root {
-	--primary: #6effd4;
+	--primary: #1dffbb;
+	--primary-tint: #56ffcc;
+	--secondary: #1db7ff;
 }
 
 * {
 	font-family: 'Roboto', sans-serif;
+	color: #222;
 }
 
 section {
@@ -18,12 +21,13 @@ section {
 .userId {
 	padding: 1rem;
 }
+
 .story,
 .prediction {
 	padding: 1rem;
 	margin-top: 1rem;
 	border-radius: 10px;
-	border: 2px solid var(--primary);
+	border: 2px solid var(--secondary);
 	user-select: none;
 }
 
@@ -66,35 +70,11 @@ input[type='range']::-webkit-slider-thumb {
 }
 
 button:hover {
-	background-color: var(--primary);
+	background-color: var(--primary-tint);
 	transform: translate(0, 2px);
 }
 
-.chart > div {
-	float: left;
-}
-.labels div {
-	font: 10px sans-serif;
-	color: black;
-	text-align: left;
-	padding: 3px;
-	margin: 1px;
-	display: block;
-}
-
-.percentages div {
-	font: 10px sans-serif;
-	background-color: var(--primary);
-	text-align: right;
-	padding: 3px;
-	margin: 1px;
-	color: black;
-	display: block;
-}
-
 select {
-	background-color: transparent;
-	border-radius: 10px;
 	padding: 0 1em 0 0;
 	margin: 0;
 	width: 100%;
@@ -103,35 +83,18 @@ select {
 	padding-left: 20px;
 }
 
+textarea,
+select,
+input {
+	border: 2px solid var(--primary);
+	border-radius: 10px;
+	background-color: transparent;
+}
+
 select > * {
 	background-color: #fff;
 	border-radius: 10px;
 	border: none;
-}
-
-.banner {
-	padding: 1rem;
-	border-radius: 10px;
-	text-align: center;
-	font-weight: bold;
-
-	position: fixed;
-	top: 10px;
-	left: 50%;
-	transform: translate(-50%, 0);
-	width: 90%;
-}
-
-.success {
-	background-color: #00ff95;
-}
-
-.error {
-	background-color: #ff2a4e;
-}
-
-.loading {
-	background-color: #2af1ff;
 }
 
 .proceed {
@@ -147,4 +110,44 @@ hr {
 
 textarea {
 	border-radius: 10px;
+	height: 50px;
+}
+
+h1 {
+	color: var(--secondary);
+	font-size: 50px;
+	text-align: center;
+}
+
+.graph {
+	width: 100%;
+	display: flex;
+	flex-direction: row;
+	color: #222;
+	text-align: left;
+	padding: 3px;
+	margin: 1px;
+}
+
+.graph > div {
+	height: 20px;
+	width: 70px;
+	margin-bottom: 10px;
+}
+
+.data-bar {
+	background-color: var(--secondary);
+}
+
+.flex-section {
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+	align-items: center;
+	min-width: 60%;
+}
+
+.flex-section > div {
+	width: 50%;
+	margin: 50px 50px;
 }
