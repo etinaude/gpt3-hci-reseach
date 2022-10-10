@@ -73,7 +73,7 @@
 	<p>
 		Project title: Visualising and supporting uncertainty in emotion recognition displays<br />
 		Name of Supervisor: Danielle Lottridge<br />
-		Name of Student Researcher: Gerald Webber
+		Name of Student Researcher(s): Group 14 - Balaram, Etienne, Henry, Lance, Raina and Yuwei
 	</p>
 
 	<p>
