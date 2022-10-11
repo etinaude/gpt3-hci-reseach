@@ -2,7 +2,7 @@
 
 This is the implementation built to support Group 14's research on project D2: Visualising and supporting uncertainty in emotion recognition displays. This project is supervised by Dr. Danielle Lottridge and supported by Dr. Gerald Weber. 
 
-Web app is currently deployed at [hci.etinaude.dev](https://hci.etinaude.dev/about). Use ID '56' when prompted.
+Web app is currently deployed at [hci.etinaude.dev](https://hci.etinaude.dev). Use ID '56' when prompted.
 
 The purpose of our project is to provide a greater understanding of how the display of machine uncertainty affects a human user's response toward the classification of human emotion in written text. The approach we have when doing this is comparing the accuracy of classification of emotion in written text by providing different displays of uncertainty. 
 
@@ -34,6 +34,11 @@ We are currently designating two different focus groups. One will be presented w
 
 <p align="center">
   <img src="https://i.imgur.com/knvoCdH.png" />
+  Group A: Only machine classified emotion shown
+  <br> </br>
+  
+   <img src="https://i.imgur.com/gBZrR2e.png" />
+  Group B: Machine classified emotions and uncertainties shown
 </p>
 
 The results from all users from both groups will then be analysed. The effect of a display of machine uncertainty to users and how it affects whether or not they classified the given emotion from a written text correctly, and their confidence will be looked at and with findings compiled in a report.
@@ -100,7 +105,7 @@ Svelte was used because of its familiarity and lightweight nature in creating a 
 
 - [Firebase](https://firebase.google.com/)
 
-A simple Firebase database was used in order to store the data from participant experiments. Calls to the database are fast and efficient.
+A simple Firebase database was used in order to store the data from participant experiments as well as GTP-3 generated stories. Calls to the database are fast and efficient.
 
 - [Netlify](https://www.netlify.com/)
 
