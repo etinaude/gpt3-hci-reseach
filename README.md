@@ -40,14 +40,19 @@ The results from all users from both groups will then be analysed. The effect of
 <br />
 
 ## Experimental Preparations
-### Research Questions
-To determine the direction of research, research gaps from the literature review were summarised. Multiple rounds of discussions were conducted within the team and with the supervisor. Initially, the team wanted to investigate the impact of a variety of different displays of machine uncertainty on human’s ability to classify emotions. After discussing with the supervisor, the team realised the necessity of controlling variables, and thus only two different kinds of displays were chosen in the final experiment.
+### Research Question
+To determine the direction of research, research gaps from the literature review were summarised. Multiple rounds of discussions were conducted within the team and with the supervisor. Initially, the team wanted to investigate the impact of a variety of different displays of machine uncertainty on human’s ability to classify emotions. After discussing with the supervisor, the team realised the necessity of controlling variables, and thus only two different kinds of display were chosen in the final experiment. Our research therefore looks at understanding
+>How the display of machine uncertainty affects a human user's response and uncertainty toward the classification of human emotion in written text
+
+Relevant Literature: 
+- [Evaluation of Normal Model Visualization for Anomaly Detection in Maritime Traffic](https://www.researchgate.net/publication/261959138_Evaluation_of_Normal_Model_Visualization_for_Anomaly_Detection_in_Maritime_Traffic)
+- [Recent advances and challenges in uncertainty visualization: a survey](https://www.researchgate.net/profile/Parashar-Dhakal/publication/353050061_Recent_advances_and_challenges_in_uncertainty_visualization_a_survey/links/60e867341c28af3458594a24/Recent-advances-and-challenges-in-uncertainty-visualization-a-survey.pdf)
 
 ### Implementation
-Text emotion classification is the centre of this research project, to obtain text data the team utilised the Generative Pre-trained Transformer 3 [GPT3](https://openai.com/api/) to generate stories with emotions. Furthermore, to show machine emotion classification uncertainty, a hugging face emotion classification model [bert-base-uncased-emotion](https://huggingface.co/bhadresh-savani/bert-base-uncased-emotion) was used to generate six different emotion classifications with percentages. A web app was created for experiment participants to read stories and uncertainty displays and enter their emotion classification results. To reduce the waiting time for users, stories and machine classification results were pre-generated stories and classifications and stored on Firebase.
+Text emotion classification is the centre of this research project, to obtain text data the team utilised the Generative Pre-trained Transformer 3 ([GPT3](https://openai.com/api/)) to generate stories with emotions. Furthermore, to show machine emotion classification uncertainty, a hugging face emotion classification model [bert-base-uncased-emotion](https://huggingface.co/bhadresh-savani/bert-base-uncased-emotion) was used to generate six different emotion classifications with percentages. A web app was created for experiment participants to read stories and uncertainty displays and enter their emotion classification results. To reduce the waiting time for users, stories and machine classification results were pre-generated and stored on Firebase.
 
 ### Instructions and Consent
-Detailed instructions and a Research Consent Form are included in the web app before users proceed with the experiment. The instructions include the time required for the participants to complete the entire experiment, the content of the experiment tasks, how the experimental data was generated, and how they should interact with the web app. In the consent form, participants agreed to statements such as to take part in this research and that they are able to withdraw their participation at any time and to withdraw any data traceable.
+Detailed instructions and a Research Consent Form are included in the web app for users to agree to proceed with the experiment. The instructions include the time required for the participants to complete the entire experiment, the content of the experiment tasks, how the experimental data was generated, and how they should interact with the web app. In the consent form, participants agreed to statements such as to take part in this research and that they are able to withdraw their participation at any time and to withdraw any data traceable.
 
 ### Organising Test Subjects
 Around 30 participants were recruited to complete the experiment. All participants are friends or family members of one of the team members. Participants were informed of the task, the time required, the research topic, and other relevant information in the Research Consent Form, and they only proceeded with the experiment if they agreed with the consent. 
@@ -56,7 +61,7 @@ Around 30 participants were recruited to complete the experiment. All participan
 Participants were randomly allocated into two groups, control and treatment groups. Each participant is randomly assigned a positive integer from 0 to 100 as their user ID, participants with a user ID less than 50 are assigned to the control group, and the rest are assigned to the treatment group. To investigate the impact of the display of machine uncertainty, the control group is shown one emotion classification label (e.g. Happy) generated by the machine (the label with the highest percentage from the list of labels). In contrast, the treatment group is shown with a list of labels with percentages (uncertainty information). 
 
 ### Results
-User-generated data is collected through the web app and directly stored in the Firebase database. Each participant was asked to provide three pieces of data for each question, the custom answer collected from a short answer input text box, the emotion label selected from a finite list of emotions provided collected from a multi-select drop-down list, and the confidence level percentage collected from a slider from 0% to 100%. To complete the experiment, each participant was required to complete 10 questions, in total, 30 data points were collected for each participant.
+User-generated data is collected through the web app and directly stored in the Firebase database. No personal information is collected. Each participant was asked to provide three pieces of data for each question, the custom answer collected from a short answer input text box, the emotion label selected from a finite list of emotions provided collected from a multi-select drop-down list, and the confidence level percentage collected from a slider from 0% to 100%. To complete the experiment, each participant was required to complete 10 questions, in total, 30 data points were collected for each participant.
 
 <br />
 <br />
@@ -103,6 +108,8 @@ The web application was hosted on Netlify. Simple and easy.
 
 - [Cloudflare](https://www.cloudflare.com/)
 
+DNS. Security and protection :)
+
 - [GitHub](https://github.com)
 
 Github is the most familiar and well-used version control used by the group and so was selected.
@@ -121,6 +128,6 @@ All UAHPEC certificates can be found [here](https://github.com/etinaude/gpt3-hci
 | Henry Gann      | [4hgann](https://github.com/4hgann) |
 | Lance Zhang     | [lancelancezhang](https://github.com/lancelancezhang) |
 | Yuwei Shen       | [alieevee](https://github.com/alieevee) |
-| Balaram Panda |[BalaramUOA](github.com/BalaramUOA) |
+| Balaram Panda |   [BalaramUOA](github.com/BalaramUOA) |
 
 
