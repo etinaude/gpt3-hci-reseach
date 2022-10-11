@@ -97,6 +97,7 @@ Lesser the standard deviation, lesser the variations in responses.
 2) Comparing how far the user responses are from the machine learning based emotion classifier score.
 3) How much the responses on each story deviated from Group A to group B.
 
+![image](https://user-images.githubusercontent.com/64719560/195040480-b007fd71-d749-4995-b1a2-3c854e4455e7.png)
 
 
 
