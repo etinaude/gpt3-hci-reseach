@@ -121,6 +121,6 @@ All UAHPEC certificates can be found [here](https://github.com/etinaude/gpt3-hci
 | Henry Gann      | [4hgann](https://github.com/4hgann) |
 | Lance Zhang     | [lancelancezhang](https://github.com/lancelancezhang) |
 | Yuwei Shen       | [alieevee](https://github.com/alieevee) |
-| Balaram Panda |                                         |
+| Balaram Panda |[BalaramUOA](github.com/BalaramUOA) |
 
 
