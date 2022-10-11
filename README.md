@@ -108,7 +108,8 @@ The web application was hosted on Netlify. Simple and easy.
 Github is the most familiar and well-used version control used by the group and so was selected.
 
 ## Forms
-All UAHPEC certificates can be found in the path:
+All UAHPEC certificates can be found here:
+https://github.com/etinaude/gpt3-hci-research/blob/main/Certificates.pdf
 
 <br />
 
