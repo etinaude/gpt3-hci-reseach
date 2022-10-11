@@ -59,6 +59,11 @@ Text emotion classification is the centre of this research project, to obtain te
 ### Project Plan Discrepancies
 As there is a slight difference between what was presented in the Project Plan Presentation and what was actually executed. There were three changes that were made.
 
+<p align="center">
+   <img src="https://i.imgur.com/jv4XFGS.png" />
+  Initial project plan
+</p>
+
 Firstly, as described in the Research Question section, as there was a change to look at machine uncertainty and a human user's response to it in human emotion in written text, implementation had to change in order to match that. This meant that we were no longer showing to the user what the 'topic' of a story was, but rather showing what another machine that had classified the story thought. The second change that was made was to the user input. Rather than just selecting from a finite list of emotions, we include both a way for the user to write a custom emotion and a user input to show their own confidence/uncertainty in their answer. Finally, in the initial plan there was the option to see how the participant did compared to other users. As we did not want the results of one participant to affect another, this was removed from the implementation in order to keep testing valid and fair.
 
 ### Instructions and Consent
@@ -72,6 +77,26 @@ Participants were randomly allocated into two groups, control and treatment grou
 
 ### Results
 User-generated data is collected through the web app and directly stored in the Firebase database. No personal information is collected. Each participant was asked to provide three pieces of data for each question, the custom answer collected from a short answer input text box, the emotion label selected from a finite list of emotions provided collected from a multi-select drop-down list, and the confidence level percentage collected from a slider from 0% to 100%. To complete the experiment, each participant was required to complete 10 questions, in total, 30 data points were collected for each participant.
+
+### Data Analysis
+These are the following ways we can measure the uncertainty in emotional response.
+1) By comparing the responses from various participants on each question.
+Example: if we would like to understand which story has the most uncertain responses? We can consider the voting approach and count the emotion category in each question. Then apply statistical techniques to analyse the uncertainty. Example in following Responses, the story2 got less standard deviation than story1. We can conclude that story2 has more uncertain response. 
+
+<p align="center">
+   <img src="https://i.imgur.com/ei7GvwF.png" />
+<img src="https://i.imgur.com/vcdPc97.png" />
+</p>
+
+Standard deviation of story1 responses is: 17.54
+
+Standard deviation of story2 responses is: 15.34
+
+Lesser the standard deviation, lesser the variations in responses. 
+
+2) Comparing how far the user responses are from the machine learning based emotion classifier score.
+3) How much the responses on each story deviated from Group A to group B.
+
 
 <br />
 <br />
