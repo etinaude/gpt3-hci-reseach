@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { goto } from '$app/navigation';
 	import Banner from '$lib/Banner.svelte';
 
 	let userId = '';
@@ -10,7 +11,8 @@
 
 	function showQuestions() {
 		if (checkId()) {
-			window.location.href = `/survey?id=${userId}`;
+			// window.location.href = `/survey?id=${userId}`;
+			goto(`/survey?id=${userId}`);
 		} else {
 			bannerInfo.text = 'Please enter a valid ID';
 			bannerInfo.display = true;
@@ -33,8 +35,8 @@
 </script>
 
 <svelte:head>
-	<title>About</title>
-	<meta name="description" content="About this app" />
+	<title>Group 14 Survey</title>
+	<meta name="description" content="Survey on HCI" />
 </svelte:head>
 
 <section id="UserId">

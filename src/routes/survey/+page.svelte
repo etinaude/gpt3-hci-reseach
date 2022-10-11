@@ -5,6 +5,7 @@
 	import { collection, getDocs } from 'firebase/firestore';
 	import { page } from '$app/stores';
 	import Banner from '$lib/Banner.svelte';
+	import { goto } from '$app/navigation';
 
 	let firebase: any = {
 		fireStore: null,
@@ -93,7 +94,7 @@
 		} catch (error) {
 			console.log(error);
 		}
-		window.location.href = 'about';
+		goto('/');
 		return '';
 	}
 
@@ -122,7 +123,7 @@
 
 	function reset() {
 		if (questionCount >= 10) {
-			window.location.href = 'thanks';
+			goto('/thanks');
 			return;
 		}
 
@@ -192,8 +193,7 @@
 </script>
 
 <svelte:head>
-	<title>Home</title>
-	<meta name="description" content="Svelte demo app" />
+	<title>Survey</title>
 </svelte:head>
 
 <h1>Question {questionCount + 1}</h1>

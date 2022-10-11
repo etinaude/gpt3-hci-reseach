@@ -1,12 +1,14 @@
 <script lang="ts">
+	import { goto } from '$app/navigation';
+
 	function back() {
 		window.location.href = '/';
+		goto('/');
 	}
 </script>
 
 <svelte:head>
 	<title>Thank You!</title>
-	<meta name="description" content="About this app" />
 </svelte:head>
 
 <section id="End">
