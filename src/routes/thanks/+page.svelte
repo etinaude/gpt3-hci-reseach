@@ -1,6 +1,6 @@
 <script lang="ts">
 	function back() {
-		window.location.href = 'about';
+		window.location.href = '/';
 	}
 </script>
 

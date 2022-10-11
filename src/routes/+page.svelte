@@ -1,264 +1,95 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
-	import { v4 as uuidv4 } from 'uuid';
-	import firebaseConfig from './../keys/firebase';
-	import { collection, getDocs } from 'firebase/firestore';
-	import { page } from '$app/stores';
 	import Banner from '$lib/Banner.svelte';
 
-	let firebase: any = {
-		fireStore: null,
-		app: null,
-		db: null
-	};
-
-	let userData = {
-		chosenEmotion: '',
-		explanation: '',
-		customAnswer: '',
-		confidence: '5'
-	};
-
-	let storyList: string[];
-	let currentStory = `Loading...`;
-	let singleComputerPrediction = '';
-	let allUncertainties: { id: string; emotions: Map<string, number> }[];
 	let userId = '';
-	let questionCount = 0;
-
 	let bannerInfo = {
-		style: '',
+		style: 'error',
 		text: '',
 		display: false
 	};
 
-	//Bert emotions
-	let labels = ['anger', 'fear', 'joy', 'love', 'sadness', 'surprise'];
-
-	//First Question
-	let graph = [
-		{
-			emotion: 'anger',
-			probability: 64.32
-		},
-		{
-			emotion: 'joy',
-			probability: 41
-		},
-		{
-			emotion: 'fear',
-			probability: 2.77
-		},
-		{
-			emotion: 'sadness',
-			probability: 1.59
-		},
-		{
-			emotion: 'surprise',
-			probability: 0.63
-		},
-		{
-			emotion: 'love',
-			probability: 0.36
-		}
-	];
-
-	onMount(async () => {
-		const firebaseApp = await import('firebase/app');
-		firebase.fireStore = await import('firebase/firestore');
-
-		// Initialize Firebase
-		firebase.app = firebaseApp.initializeApp(firebaseConfig);
-		firebase.db = firebase.fireStore.getFirestore(firebase.app);
-		setup();
-	});
-
-	async function setup() {
-		//stories are stored in a collection in Firestore
-		const snapshot = await getDocs(collection(firebase.db, 'stories'));
-		storyList = [];
-		allUncertainties = [];
-		snapshot.forEach((doc) => {
-			getStoriesAndClassification(doc.id, doc.data().story, doc.data().emotions);
-		});
-		currentStory = storyList[questionCount];
-		//First story prediction
-		singleComputerPrediction = 'anger';
-
-		userId = getId();
-	}
-
-	function getId(): string {
-		try {
-			const id = $page.url.search.split('=')[1];
-			const idNum = parseFloat(id);
-
-			if (idNum === Math.round(idNum) && idNum <= 100 && idNum >= 0) return id;
-		} catch (error) {
-			console.log(error);
-		}
-		window.location.href = 'about';
-		return '';
-	}
-
-	function getStoriesAndClassification(id: string, story: string, emotions: Map<string, number>) {
-		storyList.push(story);
-		allUncertainties.push({ id, emotions });
-	}
-
-	function validate(): boolean {
-		if (!(userData.chosenEmotion || userData.customAnswer) || !userData.explanation) {
-			bannerInfo = {
-				style: 'error',
-				text: 'Please fill out all fields',
-				display: true
-			};
-
+	function showQuestions() {
+		if (checkId()) {
+			window.location.href = `/survey?id=${userId}`;
+		} else {
+			bannerInfo.text = 'Please enter a valid ID';
+			bannerInfo.display = true;
 			setTimeout(() => {
 				bannerInfo.display = false;
 			}, 2000);
-
-			return false;
-		}
-
-		return true;
-	}
-
-	function reset() {
-		if (questionCount >= 10) {
-			window.location.href = 'thanks';
-			return;
-		}
-
-		currentStory = 'Loading';
-		userData.chosenEmotion = '';
-		userData.explanation = '';
-		userData.customAnswer = '';
-		userData.confidence = '5';
-		if (questionCount != 0) {
-			getUncertaintyInformation();
 		}
 	}
 
-	async function submit() {
-		bannerInfo.display = true;
-
-		bannerInfo.text = 'Submitting...';
-		bannerInfo.style = 'loading';
-
-		const doc = {
-			userId,
-			questionCount,
-			singleComputerPrediction,
-			confidence: userData.confidence,
-			emotion: userData.chosenEmotion,
-			explanation: userData.explanation,
-			customAnswer: userData.customAnswer,
-			story: currentStory
-		};
-
-		if (!validate()) return;
-
-		const uuid = uuidv4();
-
+	function checkId(): boolean {
 		try {
-			await firebase.fireStore.setDoc(firebase.fireStore.doc(firebase.db, 'docs', uuid), doc);
-			bannerInfo.text = 'Submitted! 🙂';
-			bannerInfo.style = 'success';
-			questionCount++;
-			reset();
-		} catch {
-			bannerInfo.style = 'apiError';
-			bannerInfo.text = 'Hmm Something went wrong! Please Try again shortly';
+			const id = parseFloat(userId);
+			if (id === Math.round(id) && id <= 100 && id >= 0) return true;
+		} catch (error) {
+			console.log(error);
 		}
 
-		setTimeout(() => {
-			bannerInfo.display = false;
-		}, 2000);
+		return false;
 	}
-
-	async function getUncertaintyInformation() {
-		graph = [];
-		Object.entries(allUncertainties[questionCount].emotions).forEach(([key, value]) => {
-			graph.push({ emotion: key, probability: value });
-		});
-
-		graph.sort((a, b) => b.probability - a.probability);
-
-		//For uncertainties
-		currentStory = storyList[questionCount];
-
-		//For single emotion
-		singleComputerPrediction = graph[0].emotion;
-	}
-
-	reset();
 </script>
 
 <svelte:head>
-	<title>Home</title>
-	<meta name="description" content="Svelte demo app" />
+	<title>About</title>
+	<meta name="description" content="About this app" />
 </svelte:head>
 
-<h1>Question {questionCount + 1}</h1>
+<section id="UserId">
+	<h1>Welcome!</h1>
 
-<section class="flex-section">
-	<div>
-		<h3>What emotion is conveyed in this story?</h3>
-		<div class="story">{currentStory}</div>
+	<h2>Instructions</h2>
 
-		<h3>The computer thinks this:</h3>
-		<div class="prediction">
-			{#if parseInt(userId) > 50}
-				<div class="chart">
-					{#each graph as datum}
-						<div class="graph">
-							<div>
-								{datum.emotion}
-							</div>
-							<div style="width: {datum.probability * 5}px; " class="data-bar">
-								<div>{datum.probability}%</div>
-							</div>
-						</div>
-					{/each}
-				</div>
-			{:else}
-				{singleComputerPrediction}
-			{/if}
-		</div>
-	</div>
+	<p>
+		Thank you for agreeing to take part in our HCI experiment. Please ensure that you take part in
+		this study completely alone. It will take approximately 10 minutes to complete and you will be
+		asked to classify 10 short stories. <br /><br />
 
-	<!-- Feedback form -->
-	<div class="feedback-cont">
-		<h3>Select emotion showed in the story:</h3>
+		You will firstly be asked to enter your user ID - this should have been provided to you before
+		the experiment. As your proceed from there you will be presented a story generated by a
+		computer. This same story will also be inputted and classified by an AI and the emotion(s) it
+		thinks is being displayed most will be shown to you. <br /><br />
 
-		<select bind:value={userData.chosenEmotion}>
-			{#each labels as opt}
-				<option value={opt}>{opt}</option>
-			{/each}
-		</select>
+		Following this you will select from a finite list of emotions the emotion you think best matches
+		what was conveyed in the story above.<br /><br />
 
-		<h3>What do you think the emotion shown in the story is? (if not in the list above)</h3>
-		<textarea bind:value={userData.customAnswer} />
+		In order for us to build a better understanding, we ask you to write a short answer reasoning
+		why you selected the emotion.<br /><br />
 
+		Finally, select on the slider the confidence level of your answer. 0% (left) being not confident
+		at all and 100% (right) being very confident.<br />
+	</p>
+	<h3>Enter your user ID</h3>
+
+	<input class="userId" bind:value={userId} placeholder="ID" />
+
+	<hr />
+
+	<h2>Research Consent Form</h2>
+	<h3>THIS FORM WILL BE HELD FOR A PERIOD OF 2 MONTHS</h3>
+
+	<p>
+		Project title: Visualising and supporting uncertainty in emotion recognition displays<br />
+		Name of Supervisor: Danielle Lottridge<br />
+		Name of Student Researcher: Gerald Webber
+	</p>
+
+	<p>
+		I have read the Participant Information Sheet, have understood the nature of the research and
+		why I have been selected. I have had the opportunity to ask questions and have had them answered
+		to my satisfaction.
 		<br />
 		<br />
+		• I agree to take part in this research. <br />
+		• I understand that I am free to withdraw my participation at any time, and to withdraw any data
+		traceable.<br />
+		• I wish / do not wish to receive the summary of findings.<br />
+		• I agree to not disclose anything discussed in the focus group.<br />
+	</p>
 
-		<h3>Why did you select this emotion?:</h3>
-		<textarea bind:value={userData.explanation} />
-
-		<br />
-		<br />
-
-		<h3>How confident are you?:</h3>
-		<input type="range" min="0" max="10" class="slider" bind:value={userData.confidence} />
-		<div>{userData.confidence}0%</div>
-
-		<br />
-		<br />
-
-		<button on:click={() => submit()}> Submit </button>
-	</div>
+	<button on:click={() => showQuestions()} class="proceed"> Agree and Proceed </button>
 </section>
 
 <Banner {bannerInfo} />

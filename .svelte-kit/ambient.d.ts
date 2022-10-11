@@ -45,8 +45,8 @@ declare module '$env/static/private' {
 	export const CHROME_DESKTOP: string;
 	export const LESS: string;
 	export const DESKTOP_SESSION: string;
-	export const TERM_PROGRAM_VERSION: string;
 	export const NVM_BIN: string;
+	export const TERM_PROGRAM_VERSION: string;
 	export const npm_package_json: string;
 	export const ZSH: string;
 	export const LSCOLORS: string;
@@ -64,8 +64,8 @@ declare module '$env/static/private' {
 	export const DBUS_SESSION_BUS_ADDRESS: string;
 	export const javaHome: string;
 	export const npm_config_engine_strict: string;
-	export const COLORTERM: string;
 	export const JENV_SHELL: string;
+	export const COLORTERM: string;
 	export const COLOR: string;
 	export const NVM_DIR: string;
 	export const npm_config_metrics_registry: string;
@@ -79,8 +79,8 @@ declare module '$env/static/private' {
 	export const npm_config_prefix: string;
 	export const DEFAULTS_PATH: string;
 	export const XDG_SESSION_CLASS: string;
-	export const USER_ZDOTDIR: string;
 	export const PKG_CONFIG_PATH: string;
+	export const USER_ZDOTDIR: string;
 	export const XDG_SESSION_ID: string;
 	export const TERM: string;
 	export const npm_config_cache: string;
@@ -105,8 +105,8 @@ declare module '$env/static/private' {
 	export const XDG_SESSION_DESKTOP: string;
 	export const XMODIFIERS: string;
 	export const TERM_PROGRAM: string;
-	export const LS_COLORS: string;
 	export const VSCODE_GIT_IPC_HANDLE: string;
+	export const LS_COLORS: string;
 	export const npm_lifecycle_script: string;
 	export const SSH_AUTH_SOCK: string;
 	export const ORIGINAL_XDG_CURRENT_DESKTOP: string;
@@ -115,7 +115,6 @@ declare module '$env/static/private' {
 	export const npm_package_version: string;
 	export const npm_lifecycle_event: string;
 	export const QT_ACCESSIBILITY: string;
-	export const NO_AT_BRIDGE: string;
 	export const IFS: string;
 	export const CAPACITOR_ANDROID_STUDIO_PATH: string;
 	export const GPG_AGENT_INFO: string;
@@ -130,15 +129,14 @@ declare module '$env/static/private' {
 	export const XDG_DATA_DIRS: string;
 	export const CLUTTER_IM_MODULE: string;
 	export const XDG_CONFIG_DIRS: string;
-	export const ZDOTDIR: string;
 	export const ANDROID_HOME: string;
 	export const NVM_CD_FLAGS: string;
+	export const ZDOTDIR: string;
 	export const npm_config_global_prefix: string;
 	export const npm_command: string;
 	export const KDE_SESSION_UID: string;
 	export const INIT_CWD: string;
 	export const EDITOR: string;
-	export const NODE_ENV: string;
 }
 
 /**
@@ -187,8 +185,8 @@ declare module '$env/dynamic/private' {
 		CHROME_DESKTOP: string;
 		LESS: string;
 		DESKTOP_SESSION: string;
-		TERM_PROGRAM_VERSION: string;
 		NVM_BIN: string;
+		TERM_PROGRAM_VERSION: string;
 		npm_package_json: string;
 		ZSH: string;
 		LSCOLORS: string;
@@ -206,8 +204,8 @@ declare module '$env/dynamic/private' {
 		DBUS_SESSION_BUS_ADDRESS: string;
 		javaHome: string;
 		npm_config_engine_strict: string;
-		COLORTERM: string;
 		JENV_SHELL: string;
+		COLORTERM: string;
 		COLOR: string;
 		NVM_DIR: string;
 		npm_config_metrics_registry: string;
@@ -221,8 +219,8 @@ declare module '$env/dynamic/private' {
 		npm_config_prefix: string;
 		DEFAULTS_PATH: string;
 		XDG_SESSION_CLASS: string;
-		USER_ZDOTDIR: string;
 		PKG_CONFIG_PATH: string;
+		USER_ZDOTDIR: string;
 		XDG_SESSION_ID: string;
 		TERM: string;
 		npm_config_cache: string;
@@ -247,8 +245,8 @@ declare module '$env/dynamic/private' {
 		XDG_SESSION_DESKTOP: string;
 		XMODIFIERS: string;
 		TERM_PROGRAM: string;
-		LS_COLORS: string;
 		VSCODE_GIT_IPC_HANDLE: string;
+		LS_COLORS: string;
 		npm_lifecycle_script: string;
 		SSH_AUTH_SOCK: string;
 		ORIGINAL_XDG_CURRENT_DESKTOP: string;
@@ -257,7 +255,6 @@ declare module '$env/dynamic/private' {
 		npm_package_version: string;
 		npm_lifecycle_event: string;
 		QT_ACCESSIBILITY: string;
-		NO_AT_BRIDGE: string;
 		IFS: string;
 		CAPACITOR_ANDROID_STUDIO_PATH: string;
 		GPG_AGENT_INFO: string;
@@ -272,15 +269,14 @@ declare module '$env/dynamic/private' {
 		XDG_DATA_DIRS: string;
 		CLUTTER_IM_MODULE: string;
 		XDG_CONFIG_DIRS: string;
-		ZDOTDIR: string;
 		ANDROID_HOME: string;
 		NVM_CD_FLAGS: string;
+		ZDOTDIR: string;
 		npm_config_global_prefix: string;
 		npm_command: string;
 		KDE_SESSION_UID: string;
 		INIT_CWD: string;
 		EDITOR: string;
-		NODE_ENV: string;
 		[key: string]: string | undefined;
 	}
 }
